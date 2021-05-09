@@ -329,10 +329,6 @@ const Header = () => {
                 <a
                   className={`btn btn-${gContext.header.variant} text-uppercase font-size-3`}
                   href='https://www.facebook.com/myStudycounter'
-                  // onClick={(e) => {
-                  //   e.preventDefault();
-                  //   gContext.toggleSignUpModal();
-                  // }}
                 >
                   Order Now
                 </a>
