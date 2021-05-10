@@ -17,6 +17,7 @@ const ModalSignIn = props => {
   const [password, setPassword] = useState('')
   const [validation, setValidation] = useState({})
   const [loading, setLoading] = useState(false)
+  const [loginResponse, setLoginResponse] = useState({})
 
   const handleOpenSignUp = e => {
     e.preventDefault()
@@ -42,12 +43,14 @@ const ModalSignIn = props => {
         .signInWithEmailAndPassword(email, password)
         .then(res => {
           setLoading(false)
-          console.log(res.user)
+          setLoginResponse({
+            ...res.user,
+            user: true
+          })
         })
         .catch(err => {
           setLoading(false)
-          const { code, message } = err
-          console.log(code, message)
+          setLoginResponse({ ...err })
         })
     }
   }
@@ -131,6 +134,16 @@ const ModalSignIn = props => {
             </div>
             <div className='col-lg-7 col-md-6'>
               <div className='bg-white-2 h-100 px-11 pt-11 pb-7'>
+                {loginResponse.message && (
+                  <label style={{ color: 'red', fontSize: 'small' }}>
+                    {loginResponse.message}
+                  </label>
+                )}
+                {loginResponse.user && (
+                  <label style={{ color: 'green', fontSize: 'small' }}>
+                    Login Successful!
+                  </label>
+                )}
                 <form>
                   <div className='form-group'>
                     <label
@@ -152,12 +165,10 @@ const ModalSignIn = props => {
                       }}
                       id='email'
                     />
-                    {validation.email ? (
+                    {validation.email && (
                       <label style={{ color: 'red', fontSize: 'small' }}>
                         {validation.email}
                       </label>
-                    ) : (
-                      ''
                     )}
                   </div>
                   <div className='form-group'>
@@ -192,12 +203,10 @@ const ModalSignIn = props => {
                         <span className='d-none'>none</span>
                       </a>
                     </div>
-                    {validation.password ? (
+                    {validation.password && (
                       <label style={{ color: 'red', fontSize: 'small' }}>
                         {validation.password}
                       </label>
-                    ) : (
-                      ''
                     )}
                   </div>
                   <div className='form-group d-flex flex-wrap justify-content-between'>
