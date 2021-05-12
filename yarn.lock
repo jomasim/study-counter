@@ -6969,6 +6969,13 @@ react-bootstrap@^1.0.1:
     uncontrollable "^7.0.0"
     warning "^4.0.3"
 
+react-chartist@^0.14.4:
+  version "0.14.4"
+  resolved "https://registry.yarnpkg.com/react-chartist/-/react-chartist-0.14.4.tgz#a70bdc78a92a7208973cab4253e177e99dc7bd29"
+  integrity sha512-1riwO5CjT5IdrilCM788waUYpIdl8Y4vsIc6Y5bbR3PIX46NYYtcq5bcaBEkIZfKEThuoJDEV6FU1rDmfbogsg==
+  dependencies:
+    prop-types "^15.5.8"
+
 react-countdown@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-countdown/-/react-countdown-2.2.1.tgz#28d56fc1874b5b0d5238b7efe3ae914ed8033783"

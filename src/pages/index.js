@@ -9,7 +9,6 @@ import Slider from "../sections/landing3/Slider";
 // import Pricing from "../sections/landing3/Pricing";
 import Blog from "../sections/landing2/Blog";
 
-
 const IndexPage = () => {
   return (
     <>

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Modal, Spinner } from 'react-bootstrap'
 import GlobalContext from '../../context/GlobalContext'
 import { firebaseAuth } from '../../../firebase'
+import Router from 'next/router'
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -43,10 +44,8 @@ const ModalSignIn = props => {
         .signInWithEmailAndPassword(email, password)
         .then(res => {
           setLoading(false)
-          setLoginResponse({
-            ...res.user,
-            user: true
-          })
+          gContext.toggleSignInModal()
+          Router.push('/dashboard')
         })
         .catch(err => {
           setLoading(false)
