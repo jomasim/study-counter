@@ -45,6 +45,7 @@ const ModalSignIn = props => {
         .then(res => {
           setLoading(false)
           gContext.toggleSignInModal()
+          setLoginResponse({ ...loginResponse, message: '' })
           Router.push('/dashboard')
         })
         .catch(err => {
