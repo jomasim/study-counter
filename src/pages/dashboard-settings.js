@@ -25,7 +25,6 @@ const defaultLocations = [
 
 const DashboardSettings = () => {
   return (
-    <>
       <PageWrapper
         headerConfig={{
           button: "profile",
@@ -182,7 +181,6 @@ const DashboardSettings = () => {
           </div>
         </div>
       </PageWrapper>
-    </>
   );
 };
 export default DashboardSettings;
