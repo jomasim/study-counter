@@ -1,6 +1,56 @@
 import React, { useRef, useState, useEffect } from 'react'
 import PageWrapper from '../../components/PageWrapper'
 import 'bs-stepper/dist/css/bs-stepper.min.css'
+import { Accordion, Card, Button } from 'react-bootstrap'
+
+const subCategories = [
+  'Math',
+  'Business',
+  'Science',
+  'Engineering & Technology',
+  'Arts & Humanities',
+  'Social Science'
+]
+
+const subjs = [
+  'Social Science',
+  'Sociology',
+  'Anatomy',
+  'Biochemistry',
+  'Financial Accounting'
+]
+
+const Subjects = () => {
+  const [subject, setSubject] = useState('')
+  return (
+    <div>
+      {subject && <Card body>{subject}</Card>}
+      <Accordion defaultActiveKey="'0'" style={{ marginTop: '20px' }}>
+        {subCategories.map((category, index) => (
+          <Card key={index}>
+            <Accordion.Toggle as={Card.Header} eventKey={`'${index}'`}>
+              {category}
+            </Accordion.Toggle>
+            <Accordion.Collapse eventKey={`'${index}'`}>
+              <Card.Body>
+                {subjs.map((subject, index) => (
+                  <Button
+                    style={{ margin: '2px' }}
+                    key={index}
+                    variant='outline-info'
+                    onClick={() => setSubject(subject)}
+                  >
+                    {subject}
+                  </Button>
+                ))}
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+        ))}
+      </Accordion>
+    </div>
+  )
+}
 
 const Editor = () => {
   const editorRef = useRef()
@@ -109,18 +159,9 @@ const Editor = () => {
                             </button>
                           </div>
                           <div id='test-l-2' className='content'>
-                            <div className='form-group'>
-                              <label htmlFor='exampleInputPassword1'>
-                                Password
-                              </label>
-                              <input
-                                type='password'
-                                className='form-control'
-                                id='exampleInputPassword1'
-                                placeholder='Password'
-                              />
-                            </div>
+                            <Subjects />
                             <button
+                              style={{ marginTop: '20px' }}
                               className='btn btn-primary'
                               onClick={() => stepper.current.next()}
                             >

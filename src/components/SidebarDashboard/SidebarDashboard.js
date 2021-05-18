@@ -4,7 +4,6 @@ import { Collapse } from 'react-bootstrap'
 import GlobalContext from '../../context/GlobalContext'
 import imgL from '../../assets/image/logo-main-black.png'
 
-
 const Sidebar = () => {
   const gContext = useContext(GlobalContext)
 
