@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import PageWrapper from '../../components/PageWrapper'
 import 'bs-stepper/dist/css/bs-stepper.min.css'
-import { Accordion, Card, Button } from 'react-bootstrap'
+import { Accordion, Card, Button, Form } from 'react-bootstrap'
 
 const subCategories = [
   'Math',
@@ -52,9 +52,18 @@ const Subjects = () => {
   )
 }
 
-const Editor = () => {
+const Course = () => (
+  <Form.Group>
+    <Form.Label>Enter your course code</Form.Label>
+    <Form.Control type='text' placeholder='Course code i.e FGH0001' />
+    <Form.Text className='text-muted'>
+      The course code will help to match you to the best Tutor
+    </Form.Text>
+  </Form.Group>
+)
+
+const CEditor = () => {
   const editorRef = useRef()
-  const stepper = useRef()
   const [editorLoaded, setEditorLoaded] = useState(false)
   const { CKEditor, ClassicEditor } = editorRef.current || {}
 
@@ -64,6 +73,41 @@ const Editor = () => {
       ClassicEditor: require('@ckeditor/ckeditor5-build-classic')
     }
     setEditorLoaded(true)
+  })
+
+  return (
+    <div>
+      {editorLoaded ? (
+        <CKEditor
+          editor={ClassicEditor}
+          data='<p>Start typing here ....</p>'
+          onReady={editor => {
+            // You can store the "editor" and use when it is needed.
+            console.log('Editor is ready to use!', editor)
+          }}
+          onChange={(event, editor) => {
+            const data = editor.getData()
+            console.log({ event, editor, data })
+          }}
+          onBlur={(event, editor) => {
+            console.log('Blur.', editor)
+          }}
+          onFocus={(event, editor) => {
+            console.log('Focus.', editor)
+          }}
+        />
+      ) : (
+        <div>Editor loading ...</div>
+      )}
+    </div>
+  )
+}
+
+const Editor = () => {
+  const stepper = useRef()
+  const [title, setTitle] = useState('')
+
+  useEffect(() => {
     const Stepper = require('bs-stepper')
     stepper.current = new Stepper(document.querySelector('.bs-stepper'))
   }, [])
@@ -90,7 +134,7 @@ const Editor = () => {
             <div className='row'>
               <div className='col-xxxl-9 px-lg-13 px-6'>
                 <h5 className='font-size-6 font-weight-semibold mb-11'>
-                  Question Title
+                  {title}
                 </h5>
                 {/* start hererrerere */}
                 <div className='bg-white shadow-8 pt-7 rounded pb-9 px-11'>
@@ -126,55 +170,63 @@ const Editor = () => {
                       <div className='bs-stepper-content'>
                         <form onSubmit={onSubmit}>
                           <div id='test-l-1' className='content mt-10'>
+                            <Form.Control
+                              type='text'
+                              placeholder='Question Title'
+                              onChange={e => setTitle(e.target.value)}
+                            />
+
                             {/* CKEDITOR FRO HERRER */}
-                            {editorLoaded ? (
-                              <CKEditor
-                                editor={ClassicEditor}
-                                data='<p>Start typing here ....</p>'
-                                onReady={editor => {
-                                  // You can store the "editor" and use when it is needed.
-                                  console.log('Editor is ready to use!', editor)
-                                }}
-                                onChange={(event, editor) => {
-                                  const data = editor.getData()
-                                  console.log({ event, editor, data })
-                                }}
-                                onBlur={(event, editor) => {
-                                  console.log('Blur.', editor)
-                                }}
-                                onFocus={(event, editor) => {
-                                  console.log('Focus.', editor)
-                                }}
-                              />
-                            ) : (
-                              <div>Editor loading</div>
-                            )}
-                            {/* ckdeitor end here */}
-                            <button
-                              className='btn btn-primary'
+
+                            <div style={{ marginTop: '20px' }}>
+                              <CEditor />
+                            </div>
+
+                            <Button
+                              variant='primary'
                               style={{ marginTop: '30px' }}
                               onClick={() => stepper.current.next()}
                             >
                               Next
-                            </button>
+                            </Button>
                           </div>
                           <div id='test-l-2' className='content'>
                             <Subjects />
-                            <button
-                              style={{ marginTop: '20px' }}
-                              className='btn btn-primary'
-                              onClick={() => stepper.current.next()}
-                            >
-                              Next
-                            </button>
+                            <div style={{ marginTop: '20px' }}>
+                              <Button
+                                variant='outline-primary'
+                                onClick={() => stepper.current.previous()}
+                              >
+                                Previous
+                              </Button>
+                              <Button
+                                style={{
+                                  marginLeft: '20px'
+                                }}
+                                variant='primary'
+                                onClick={() => stepper.current.next()}
+                              >
+                                Next
+                              </Button>
+                            </div>
                           </div>
                           <div id='test-l-3' className='content text-center'>
-                            <button
-                              type='submit'
-                              className='btn btn-primary mt-5'
-                            >
-                              Submit
-                            </button>
+                            <Course />
+                            <div style={{ marginTop: '20px' }}>
+                              <Button
+                                variant='outline-primary'
+                                onClick={() => stepper.current.previous()}
+                              >
+                                Previous
+                              </Button>
+                              <Button
+                                style={{ marginLeft: '20px' }}
+                                type='submit'
+                                variant='primary'
+                              >
+                                Submit
+                              </Button>
+                            </div>
                           </div>
                         </form>
                       </div>
