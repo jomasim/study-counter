@@ -162,7 +162,7 @@ const Editor = () => {
                         <div className='step' data-target='#test-l-3'>
                           <button className='step-trigger'>
                             <span className='bs-stepper-circle'>3</span>
-                            <span className='bs-stepper-label'>Validate</span>
+                            <span className='bs-stepper-label'>Course</span>
                           </button>
                         </div>
                       </div>
