@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Modal, Spinner } from 'react-bootstrap'
 import GlobalContext from '../../context/GlobalContext'
@@ -19,6 +19,17 @@ const ModalSignIn = props => {
   const [validation, setValidation] = useState({})
   const [loading, setLoading] = useState(false)
   const [loginResponse, setLoginResponse] = useState({})
+
+  useEffect(() => {
+    firebaseAuth.onAuthStateChanged(user => {
+      if (user) {
+        user.getIdToken(true).then(idToken => {
+          console.log('here come home', idToken)
+          localStorage.setItem('ACCESS_TOKEN', idToken)
+        })
+      }
+    })
+  }, [loginResponse])
 
   const handleOpenSignUp = e => {
     e.preventDefault()
@@ -42,7 +53,10 @@ const ModalSignIn = props => {
       setLoading(true)
       firebaseAuth
         .signInWithEmailAndPassword(email, password)
-        .then(res => {
+        .then(async res => {
+          // get token and save it to local storage
+          const idToken = await res.user.getIdToken()
+          localStorage.setItem('ACCESS_TOKEN', idToken)
           setLoading(false)
           gContext.toggleSignInModal()
           setLoginResponse({ ...loginResponse, message: '' })
