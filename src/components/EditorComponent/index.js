@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import 'bs-stepper/dist/css/bs-stepper.min.css'
+import { InputTags } from 'react-bootstrap-tagsinput'
+import 'react-bootstrap-tagsinput/dist/index.css'
 import { Accordion, Card, Button, Form } from 'react-bootstrap'
 import server from '../../utils/api'
 
@@ -88,6 +90,64 @@ const CEditor = ({ setContent }) => {
   )
 }
 
+const QuestionForm = ({ setTitle, setContent, onSubmit }) => {
+  const [validated, setValidated] = useState(false)
+  const [state, setState] = useState([])
+  const handleSubmit = event => {
+    const form = event.currentTarget
+    if (form.checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
+    } else {
+      onSubmit(1)
+    }
+
+    setValidated(true)
+  }
+  return (
+    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+      <Form.Group>
+        <Form.Control
+          type='text'
+          required
+          placeholder='Question Title'
+          onChange={e => setTitle(e.target.value)}
+        />
+
+        <Form.Control.Feedback type='invalid'>
+          Please enter the question title.
+        </Form.Control.Feedback>
+        <Form.Text muted>
+          Be specific, precise as much as possible e.g How to draft a letter
+        </Form.Text>
+      </Form.Group>
+
+      <div style={{ marginTop: '20px' }} type='input' required>
+        <CEditor setContent={setContent} />
+      </div>
+      <Form.Group style={{ marginTop: '20px' }}>
+        <Form.Label>Tags</Form.Label>
+        <InputTags
+          placeholder='e.g Maths, Science'
+          values={state}
+          required
+          onTags={value => setState(value.values)}
+        />
+        <Form.Control.Feedback type='invalid'>
+          Please add a tag.
+        </Form.Control.Feedback>
+        <Form.Text muted>
+          Add tags to describe your question e.g Math, Science, Algebra
+        </Form.Text>
+      </Form.Group>
+
+      <Button variant='primary' style={{ marginTop: '30px' }} type='submit'>
+        Next
+      </Button>
+    </Form>
+  )
+}
+
 const Editor = () => {
   const stepper = useRef()
   const [title, setTitle] = useState('')
@@ -106,19 +166,23 @@ const Editor = () => {
     const token = localStorage.getItem('ACCESS_TOKEN')
     const api = server(token)
     console.log('data', content, title, courseCode, subject)
-    api
-      .post('/question', {
-        body: content,
-        title,
-        course_code: courseCode,
-        subject_code: subject
-      })
-      .then(res => {
-        alert('success here')
-      })
-      .catch(err => {
-        console.log('error', err)
-      })
+    // api
+    //   .post('/question', {
+    //     body: content,
+    //     title,
+    //     course_code: courseCode,
+    //     subject_code: subject
+    //   })
+    //   .then(res => {
+    //     alert('success here')
+    //   })
+    //   .catch(err => {
+    //     console.log('error', err)
+    //   })
+  }
+
+  const handleStepSubmit = step => {
+    stepper.current.next()
   }
 
   return (
@@ -150,25 +214,11 @@ const Editor = () => {
         <div className='bs-stepper-content'>
           <form onSubmit={onSubmit}>
             <div id='test-l-1' className='content mt-10'>
-              <Form.Control
-                type='text'
-                placeholder='Question Title'
-                onChange={e => setTitle(e.target.value)}
+              <QuestionForm
+                setContent={setContent}
+                setTitle={setTitle}
+                onSubmit={handleStepSubmit}
               />
-
-              {/* CKEDITOR FRO HERRER */}
-
-              <div style={{ marginTop: '20px' }}>
-                <CEditor setContent={setContent} />
-              </div>
-
-              <Button
-                variant='primary'
-                style={{ marginTop: '30px' }}
-                onClick={() => stepper.current.next()}
-              >
-                Next
-              </Button>
             </div>
             <div id='test-l-2' className='content'>
               {subject && <Card body>{subject}</Card>}
