@@ -13,6 +13,8 @@ import Logo from '../Logo'
 import { menuItems } from './menuItems'
 
 import imgP from '../../assets/image/header-profile.png'
+import { useAuth } from '../../context/AuthContext'
+import { useRouter } from 'next/router'
 
 const SiteHeader = styled.header`
   .dropdown-toggle::after {
@@ -52,6 +54,8 @@ const Header = () => {
   const gContext = useContext(GlobalContext)
   const [showScrolling, setShowScrolling] = useState(false)
   const [showReveal, setShowReveal] = useState(false)
+  const { signOut, authUser } = useAuth()
+  const router = useRouter()
 
   const size = useWindowSize()
 
@@ -106,7 +110,14 @@ const Header = () => {
                 <ul className='navbar-nav main-menu d-none d-lg-flex'>
                   {menuItems.map(
                     (
-                      { label, isExternal = false, name, items, ...rest },
+                      {
+                        label,
+                        isExternal = false,
+                        account = false,
+                        name,
+                        items,
+                        ...rest
+                      },
                       index
                     ) => {
                       const hasSubItems = Array.isArray(items)
@@ -203,16 +214,19 @@ const Header = () => {
                             </li>
                           ) : (
                             <li className='nav-item' {...rest}>
-                              {isExternal ? (
-                                <a
-                                  className='nav-link'
-                                  href={`${name}`}
-                                  target='_blank'
-                                  rel='noopener noreferrer'
-                                >
-                                  {label}
-                                </a>
-                              ) : (
+                              {account &&
+                                authUser(
+                                  <Link href={`/${name}`}>
+                                    <a
+                                      className='nav-link'
+                                      role='button'
+                                      aria-expanded='false'
+                                    >
+                                      {label}
+                                    </a>
+                                  </Link>
+                                )}
+                              {!router.pathname.match(/dashboard/) && (
                                 <Link href={`/${name}`}>
                                   <a
                                     className='nav-link'
@@ -282,7 +296,13 @@ const Header = () => {
                           </a>
                         </Link>
                         <Link href='/#'>
-                          <a className=' dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase'>
+                          <a
+                            className=' dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
+                            onClick={() => {
+                              signOut()
+                              router.push('/')
+                            }}
+                          >
                             Log Out
                           </a>
                         </Link>
@@ -303,7 +323,13 @@ const Header = () => {
                           </a>
                         </Link>
                         <Link href='/#'>
-                          <a className=' dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase'>
+                          <a
+                            className=' dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
+                            onClick={() => {
+                              signOut()
+                              router.push('/')
+                            }}
+                          >
                             Log Out
                           </a>
                         </Link>

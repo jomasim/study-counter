@@ -1,28 +1,29 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef } from 'react'
 
-import styled, { ThemeProvider } from "styled-components";
-import Helmet from "next/head";
-import AOS from "aos";
+import styled, { ThemeProvider } from 'styled-components'
+import Helmet from 'next/head'
+import AOS from 'aos'
 
-import Header from "../Header";
-import Footer from "../Footer";
+import Header from '../Header'
+import Footer from '../Footer'
+import ModalSignUp from '../ModalSignUp'
+import ModalSign from '../ModalSignIn'
 
-import SidebarDashboard from "../SidebarDashboard";
-import ModalVideo from "../ModalVideo";
-import ModalApplication from "../ModalApplication";
-import ModalSignIn from "../ModalSignIn";
-import ModalSignUp from "../ModalSignUp";
+import SidebarDashboard from '../SidebarDashboard'
 
-import GlobalContext from "../../context/GlobalContext";
+import GlobalContext from '../../context/GlobalContext'
 
-import GlobalStyle from "../../utils/globalStyle";
+import GlobalStyle from '../../utils/globalStyle'
 
-import imgFavicon from "../../assets/favicon.png";
+import imgFavicon from '../../assets/favicon.png'
 
-import { get, merge } from "lodash";
+import { get, merge } from 'lodash'
 
 // the full theme object
-import { theme as baseTheme } from "../../utils";
+import { theme as baseTheme } from '../../utils'
+import { useAuth } from '../../context/AuthContext'
+import { Spinner } from 'react-bootstrap'
+import { useRouter } from 'next/router'
 
 const Loader = styled.div`
   position: fixed;
@@ -39,117 +40,138 @@ const Loader = styled.div`
     opacity: 0;
     visibility: hidden;
   }
-`;
+`
 
 // options for different color modes
-const modes = { light: "light", dark: "dark" };
+const modes = { light: 'light', dark: 'dark' }
 
 // merge the color mode with the base theme
 // to create a new theme object
-const getTheme = (mode) =>
+const getTheme = mode =>
   merge({}, baseTheme, {
-    colors: get(baseTheme.colors.modes, mode, baseTheme.colors),
-  });
+    colors: get(baseTheme.colors.modes, mode, baseTheme.colors)
+  })
 
 const Layout = ({ children, pageContext }) => {
-  const gContext = useContext(GlobalContext);
-
-  const [visibleLoader, setVisibleLoader] = useState(true);
+  const gContext = useContext(GlobalContext)
+  const [visibleLoader, setVisibleLoader] = useState(true)
+  const { loading, authUser } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
-    AOS.init({ once: true });
-    setVisibleLoader(false);
-  }, []);
+    if (!loading && !authUser) {
+      router.push('/')
+    } else if (!loading && authUser) {
+      router.push('/dashboard')
+    }
+  }, [loading])
+
+  useEffect(() => {
+    AOS.init({ once: true })
+    setVisibleLoader(false)
+  }, [])
 
   // Navbar style based on scroll
-  const eleRef = useRef();
+  const eleRef = useRef()
 
   useEffect(() => {
     window.addEventListener(
-      "popstate",
+      'popstate',
       function (event) {
         // The popstate event is fired each time when the current history entry changes.
-        gContext.closeOffCanvas();
+        gContext.closeOffCanvas()
       },
       false
-    );
+    )
     window.addEventListener(
-      "pushState",
+      'pushState',
       function (event) {
         // The pushstate event is fired each time when the current history entry changes.
-        gContext.closeOffCanvas();
+        gContext.closeOffCanvas()
       },
       false
-    );
-  }, [gContext]);
+    )
+  }, [gContext])
 
-  if (pageContext.layout === "bare") {
+  if (pageContext.layout === 'dashboard' && loading) {
+    return (
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          left: '50%'
+        }}
+        className='skelton'
+      >
+        <Spinner animation='grow' variant='primary'></Spinner>
+      </div>
+    )
+  }
+
+  if (pageContext.layout === 'bare') {
     return (
       <ThemeProvider
         theme={
           gContext.themeDark ? getTheme(modes.dark) : getTheme(modes.light)
         }
       >
-        <div data-theme-mode-panel-active data-theme="light">
+        <div data-theme-mode-panel-active data-theme='light'>
           <GlobalStyle />
           <Helmet>
             <title>Study Counter | Boost your GPA</title>
-            <link rel="icon" type="image/png" href={imgFavicon} />
+            <link rel='icon' type='image/png' href={imgFavicon} />
           </Helmet>
-          <Loader id="loading" className={visibleLoader ? "" : "inActive"}>
-            <div className="load-circle">
-              <span className="one"></span>
+          <Loader id='loading' className={visibleLoader ? '' : 'inActive'}>
+            <div className='load-circle'>
+              <span className='one'></span>
             </div>
           </Loader>
-          <div className="site-wrapper overflow-hidden" ref={eleRef}>
+          <div className='site-wrapper overflow-hidden' ref={eleRef}>
             {children}
           </div>
-
-          <ModalVideo />
-          <ModalApplication />
-          <ModalSignIn />
+          <ModalSign />
           <ModalSignUp />
         </div>
       </ThemeProvider>
-    );
+    )
   }
 
-  if (pageContext.layout === "dashboard") {
+  if (authUser && pageContext.layout === 'dashboard') {
     return (
       <ThemeProvider
         theme={
           gContext.themeDark ? getTheme(modes.dark) : getTheme(modes.light)
         }
       >
-        <div data-theme-mode-panel-active data-theme="light">
+        <div data-theme-mode-panel-active data-theme='light'>
           <GlobalStyle />
           <Helmet>
             <title>Study Counter | Boost your GPA</title>
-            <link rel="icon" type="image/png" href={imgFavicon} />
+            <link rel='icon' type='image/png' href={imgFavicon} />
           </Helmet>
-          <Loader id="loading" className={visibleLoader ? "" : "inActive"}>
-            <div className="load-circle">
-              <span className="one"></span>
+          <Loader id='loading' className={visibleLoader ? '' : 'inActive'}>
+            <div className='load-circle'>
+              <span className='one'></span>
             </div>
           </Loader>
           <div
-            className="site-wrapper overflow-hidden bg-default-2"
+            className='site-wrapper overflow-hidden bg-default-2'
             ref={eleRef}
           >
             <Header isDark={gContext.headerDark} />
             <SidebarDashboard />
             {children}
           </div>
-
-          <ModalVideo />
-          <ModalApplication />
-          <ModalSignIn />
+          <ModalSign />
           <ModalSignUp />
         </div>
       </ThemeProvider>
-    );
+    )
   }
-
+  if (pageContext.layout === 'dashboard' && !authUser && !loading) {
+    return null
+  }
   return (
     <>
       <ThemeProvider
@@ -157,28 +179,25 @@ const Layout = ({ children, pageContext }) => {
           gContext.themeDark ? getTheme(modes.dark) : getTheme(modes.light)
         }
       >
-        <div data-theme-mode-panel-active data-theme="light">
+        <div data-theme-mode-panel-active data-theme='light'>
           <GlobalStyle />
           <Helmet>
             <title>Study Counter | Boost your GPA</title>
-            <link rel="icon" type="image/png" href={imgFavicon} />
+            <link rel='icon' type='image/png' href={imgFavicon} />
           </Helmet>
-          <Loader id="loading" className={visibleLoader ? "" : "inActive"} />
-          <div className="site-wrapper overflow-hidden" ref={eleRef}>
+          <Loader id='loading' className={visibleLoader ? '' : 'inActive'} />
+          <div className='site-wrapper overflow-hidden' ref={eleRef}>
             <Header isDark={gContext.headerDark} />
             {children}
 
             <Footer isDark={gContext.footerDark} />
           </div>
-
-          <ModalVideo />
-          <ModalApplication />
-          <ModalSignIn />
+          <ModalSign />
           <ModalSignUp />
         </div>
       </ThemeProvider>
     </>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout
