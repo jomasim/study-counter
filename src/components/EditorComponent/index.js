@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import 'bs-stepper/dist/css/bs-stepper.min.css'
-import { InputTags } from 'react-bootstrap-tagsinput'
-// import 'react-bootstrap-tagsinput/dist/index.css'
+import '@pathofdev/react-tag-input/build/index.css'
 import { Accordion, Card, Button, Form } from 'react-bootstrap'
 import server from '../../utils/api'
 import { useAuth } from '../../context/AuthContext'
 import GlobalContext from '../../context/GlobalContext'
+import ReactTagInput from '@pathofdev/react-tag-input'
 
 const subCategories = [
   'Math',
@@ -50,19 +50,48 @@ const Subjects = ({ setSubject }) => (
   </Accordion>
 )
 
-const Course = ({ setCourseCode }) => (
-  <Form.Group>
-    <Form.Label>Enter your course code</Form.Label>
-    <Form.Control
-      type='text'
-      placeholder='Course code i.e FGH0001'
-      onChange={e => setCourseCode(e.target.value)}
-    />
-    <Form.Text className='text-muted'>
-      The course code will help to match you to the best Tutor
-    </Form.Text>
-  </Form.Group>
-)
+const Course = ({ setCourseCode, onSubmit }) => {
+  const [validated, setValidated] = useState(false)
+  const handleSubmit = event => {
+    event.preventDefault()
+    event.stopPropagation()
+    const form = event.currentTarget
+    if (form.checkValidity()) {
+      onSubmit()
+    }
+    setValidated(true)
+  }
+  return (
+    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+      <Form.Group>
+        <Form.Label>Enter your course code</Form.Label>
+        <Form.Control
+          type='text'
+          placeholder='Course code i.e CS-A01'
+          required
+          onChange={e => setCourseCode(e.target.value)}
+        />
+        <Form.Control.Feedback type='invalid'>
+          Please add a course code.
+        </Form.Control.Feedback>
+        <Form.Text className='text-muted'>
+          The course code will help to match you to the best Tutor
+        </Form.Text>
+      </Form.Group>
+      <div style={{ marginTop: '20px', display: 'flex' }}>
+        <Button
+          variant='outline-primary'
+          onClick={() => stepper.current.previous()}
+        >
+          Previous
+        </Button>
+        <Button style={{ marginLeft: '20px' }} type='submit' variant='primary'>
+          Submit
+        </Button>
+      </div>
+    </Form>
+  )
+}
 
 const CEditor = ({ setContent }) => {
   const [editorLoaded, setEditorLoaded] = useState(false)
@@ -92,19 +121,31 @@ const CEditor = ({ setContent }) => {
   )
 }
 
-const QuestionForm = ({ setTitle, setContent, onSubmit }) => {
+const QuestionForm = ({ setTitle, setContent, stepper, fields, setTags }) => {
   const [validated, setValidated] = useState(false)
-  const [state, setState] = useState([])
+  const [errors, setErrors] = useState({})
   const handleSubmit = event => {
+    event.preventDefault()
+    event.stopPropagation()
     const form = event.currentTarget
-    if (form.checkValidity() === false) {
-      event.preventDefault()
-      event.stopPropagation()
-    } else {
-      onSubmit(1)
+    if (form.checkValidity() && validateContent()) {
+      stepper.current.next()
     }
 
     setValidated(true)
+  }
+
+  const setBody = data => {
+    setErrors({ ...errors, content: '' })
+    setContent(data)
+  }
+
+  const validateContent = () => {
+    if (fields['content'] === '') {
+      setErrors({ ...errors, content: 'Question description is required' })
+      return false
+    }
+    return true
   }
   return (
     <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -125,15 +166,22 @@ const QuestionForm = ({ setTitle, setContent, onSubmit }) => {
       </Form.Group>
 
       <div style={{ marginTop: '20px' }} type='input' required>
-        <CEditor setContent={setContent} />
+        <CEditor setContent={setBody} />
+        <Form.Control.Feedback
+          type='invalid'
+          style={{ display: errors.content ? 'block' : 'none' }}
+        >
+          Please add question description
+        </Form.Control.Feedback>
       </div>
       <Form.Group style={{ marginTop: '20px' }}>
         <Form.Label>Tags</Form.Label>
-        <InputTags
-          placeholder='e.g Maths, Science'
-          values={state}
-          required
-          onTags={value => setState(value.values)}
+        <ReactTagInput
+          tags={fields.tags}
+          onChange={newTags => setTags(newTags)}
+          style={{ height: '4opx' }}
+          placeholder='Add tag and press enter i.e Maths, Science'
+          maxTags={10}
         />
         <Form.Control.Feedback type='invalid'>
           Please add a tag.
@@ -142,6 +190,25 @@ const QuestionForm = ({ setTitle, setContent, onSubmit }) => {
           Add tags to describe your question e.g Math, Science, Algebra
         </Form.Text>
       </Form.Group>
+
+      <div style={{ marginTop: '20px', display: 'flex' }}>
+        <Button
+          variant='outline-primary'
+          type='submit'
+          onClick={() => stepper.current.previous()}
+        >
+          Previous
+        </Button>
+        <Button
+          style={{
+            marginLeft: '20px'
+          }}
+          variant='primary'
+          type='submit'
+        >
+          Next
+        </Button>
+      </div>
     </Form>
   )
 }
@@ -155,10 +222,10 @@ const Editor = () => {
   const [courseCode, setCourseCode] = useState('')
   const { authUser, token } = useAuth()
   const [ready, setReady] = useState(false)
+  const [tags, setTags] = useState([])
 
   useEffect(() => {
     if (ready && authUser) {
-      // setGuest(false)
       handleQuestion()
       setReady(false)
     }
@@ -169,8 +236,7 @@ const Editor = () => {
     stepper.current = new Stepper(document.querySelector('.bs-stepper'))
   }, [])
 
-  const onSubmit = e => {
-    e.preventDefault()
+  const onSubmit = () => {
     console.log('data', content, title, courseCode, subject)
     if (!authUser) {
       console.log('not logged in')
@@ -197,10 +263,6 @@ const Editor = () => {
       .catch(err => {
         console.log('error', err)
       })
-  }
-
-  const handleStepSubmit = step => {
-    stepper.current.next()
   }
 
   return (
@@ -230,71 +292,39 @@ const Editor = () => {
         </div>
         {/* stepper content for here */}
         <div className='bs-stepper-content'>
-          <form onSubmit={onSubmit}>
-            <div id='test-l-1' className='content mt-10'>
-              <QuestionForm
-                setContent={setContent}
-                setTitle={setTitle}
-                onSubmit={handleStepSubmit}
-              />
-              <div style={{ marginTop: '20px', display: 'flex' }}>
-                <Button
-                  variant='outline-primary'
-                  onClick={() => stepper.current.previous()}
-                >
-                  Previous
-                </Button>
-                <Button
-                  style={{
-                    marginLeft: '20px'
-                  }}
-                  variant='primary'
-                  onClick={() => stepper.current.next()}
-                >
-                  Next
-                </Button>
-              </div>
+          <div id='test-l-1' className='content mt-10'>
+            <QuestionForm
+              setContent={setContent}
+              setTitle={setTitle}
+              stepper={stepper}
+              setTags={setTags}
+              fields={{ title, content, tags }}
+            />
+          </div>
+          <div id='test-l-2' className='content'>
+            {subject && <Card body>{subject}</Card>}
+            <Subjects setSubject={setSubject} />
+            <div style={{ marginTop: '20px', display: 'flex' }}>
+              <Button
+                variant='outline-primary'
+                onClick={() => stepper.current.previous()}
+              >
+                Previous
+              </Button>
+              <Button
+                style={{
+                  marginLeft: '20px'
+                }}
+                variant='primary'
+                onClick={() => stepper.current.next()}
+              >
+                Next
+              </Button>
             </div>
-            <div id='test-l-2' className='content'>
-              {subject && <Card body>{subject}</Card>}
-              <Subjects setSubject={setSubject} />
-              <div style={{ marginTop: '20px', display: 'flex' }}>
-                <Button
-                  variant='outline-primary'
-                  onClick={() => stepper.current.previous()}
-                >
-                  Previous
-                </Button>
-                <Button
-                  style={{
-                    marginLeft: '20px'
-                  }}
-                  variant='primary'
-                  onClick={() => stepper.current.next()}
-                >
-                  Next
-                </Button>
-              </div>
-            </div>
-            <div id='test-l-3' className='content text-center'>
-              <Course setCourseCode={setCourseCode} />
-              <div style={{ marginTop: '20px', display: 'flex' }}>
-                <Button
-                  variant='outline-primary'
-                  onClick={() => stepper.current.previous()}
-                >
-                  Previous
-                </Button>
-                <Button
-                  style={{ marginLeft: '20px' }}
-                  type='submit'
-                  variant='primary'
-                >
-                  Submit
-                </Button>
-              </div>
-            </div>
-          </form>
+          </div>
+          <div id='test-l-3' className='content'>
+            <Course setCourseCode={setCourseCode} onSubmit={onSubmit} />
+          </div>
         </div>
       </div>
     </div>
