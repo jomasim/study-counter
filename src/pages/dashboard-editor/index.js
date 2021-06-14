@@ -6,7 +6,7 @@ const Editor = () => {
   return (
     <PageWrapper
       headerConfig={{
-        button: 'editor',
+        button: 'profile',
         isFluid: true,
         bgClass: 'bg-default',
         reveal: false

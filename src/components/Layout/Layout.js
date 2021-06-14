@@ -62,7 +62,7 @@ const Layout = ({ children, pageContext }) => {
     if (!loading && !authUser) {
       router.push('/')
     } else if (!loading && authUser) {
-      router.push('/dashboard')
+      // router.push('/dashboard')
     }
   }, [loading])
 

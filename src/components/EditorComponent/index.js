@@ -1,9 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useContext } from 'react'
 import 'bs-stepper/dist/css/bs-stepper.min.css'
 import { InputTags } from 'react-bootstrap-tagsinput'
-import 'react-bootstrap-tagsinput/dist/index.css'
+// import 'react-bootstrap-tagsinput/dist/index.css'
 import { Accordion, Card, Button, Form } from 'react-bootstrap'
 import server from '../../utils/api'
+import { useAuth } from '../../context/AuthContext'
+import GlobalContext from '../../context/GlobalContext'
 
 const subCategories = [
   'Math',
@@ -140,20 +142,27 @@ const QuestionForm = ({ setTitle, setContent, onSubmit }) => {
           Add tags to describe your question e.g Math, Science, Algebra
         </Form.Text>
       </Form.Group>
-
-      <Button variant='primary' style={{ marginTop: '30px' }} type='submit'>
-        Next
-      </Button>
     </Form>
   )
 }
 
 const Editor = () => {
+  const gContext = useContext(GlobalContext)
   const stepper = useRef()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [subject, setSubject] = useState('')
   const [courseCode, setCourseCode] = useState('')
+  const { authUser, token } = useAuth()
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    if (ready && authUser) {
+      // setGuest(false)
+      handleQuestion()
+      setReady(false)
+    }
+  }, [authUser])
 
   useEffect(() => {
     const Stepper = require('bs-stepper')
@@ -162,23 +171,32 @@ const Editor = () => {
 
   const onSubmit = e => {
     e.preventDefault()
-
-    const token = localStorage.getItem('ACCESS_TOKEN')
-    const api = server(token)
     console.log('data', content, title, courseCode, subject)
-    // api
-    //   .post('/question', {
-    //     body: content,
-    //     title,
-    //     course_code: courseCode,
-    //     subject_code: subject
-    //   })
-    //   .then(res => {
-    //     alert('success here')
-    //   })
-    //   .catch(err => {
-    //     console.log('error', err)
-    //   })
+    if (!authUser) {
+      console.log('not logged in')
+      gContext.toggleSignInModal()
+      setReady(true)
+    } else if (authUser) {
+      console.log('logged in')
+      handleQuestion()
+    }
+  }
+
+  const handleQuestion = () => {
+    const api = server(token)
+    api
+      .post('/question', {
+        body: content,
+        title,
+        course_code: courseCode,
+        subject_code: subject
+      })
+      .then(res => {
+        alert('success here')
+      })
+      .catch(err => {
+        console.log('error', err)
+      })
   }
 
   const handleStepSubmit = step => {
@@ -219,6 +237,23 @@ const Editor = () => {
                 setTitle={setTitle}
                 onSubmit={handleStepSubmit}
               />
+              <div style={{ marginTop: '20px', display: 'flex' }}>
+                <Button
+                  variant='outline-primary'
+                  onClick={() => stepper.current.previous()}
+                >
+                  Previous
+                </Button>
+                <Button
+                  style={{
+                    marginLeft: '20px'
+                  }}
+                  variant='primary'
+                  onClick={() => stepper.current.next()}
+                >
+                  Next
+                </Button>
+              </div>
             </div>
             <div id='test-l-2' className='content'>
               {subject && <Card body>{subject}</Card>}
