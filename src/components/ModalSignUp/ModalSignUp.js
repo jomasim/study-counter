@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import styled from 'styled-components'
 import { Modal, Spinner } from 'react-bootstrap'
 import GlobalContext from '../../context/GlobalContext'
-import { firebaseAuth } from '../../../firebase'
+import { useAuth } from '../../context/AuthContext'
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -16,9 +16,8 @@ const ModalSignUp = props => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [loading, setLoading] = useState('')
   const [validation, setValidation] = useState({})
-
+  const { loading, signUpWithEmailAndPassword } = useAuth()
   const gContext = useContext(GlobalContext)
   const handleClose = () => {
     gContext.toggleSignUpModal()
@@ -42,18 +41,7 @@ const ModalSignUp = props => {
   const handleSubmit = e => {
     e.preventDefault()
     if (validateForm()) {
-      setLoading(true)
-      firebaseAuth
-        .createUserWithEmailAndPassword(email, password)
-        .then(res => {
-          setLoading(false)
-          console.log(res.user)
-        })
-        .catch(err => {
-          setLoading(false)
-          const { code, message } = err
-          console.log(message, code)
-        })
+      signUpWithEmailAndPassword(email, password, '/dashboard')
     }
   }
 

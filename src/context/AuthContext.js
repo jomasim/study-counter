@@ -36,7 +36,20 @@ export const useFirebaseAuth = () => {
     setAuthUser(formattedUser)
     setLoading(false)
   }
-
+  const signUpWithEmailAndPassword = (email, password, redirect) => {
+    firebaseAuth
+      .createUserWithEmailAndPassword(email, password)
+      .then(res => {
+        setLoading(false)
+        gContext.toggleSignUpModal()
+        if (redirect) {
+          router.push(redirect)
+        }
+      })
+      .catch(err => {
+        setLoading(false)
+      })
+  }
   const signInWithEmailAndPassword = (email, password, redirect) => {
     firebaseAuth
       .signInWithEmailAndPassword(email, password)
@@ -67,6 +80,7 @@ export const useFirebaseAuth = () => {
     loading,
     signOut,
     signInWithEmailAndPassword,
+    signUpWithEmailAndPassword,
     token,
     loginResponse
   }
@@ -77,6 +91,7 @@ export const AuthContext = createContext({
   loading: true,
   signOut: async () => {},
   signInWithEmailAndPassword: async () => true,
+  signUpWithEmailAndPassword: async () => true,
   token: null,
   loginResponse: {}
 })

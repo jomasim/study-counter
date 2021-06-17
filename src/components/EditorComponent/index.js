@@ -6,6 +6,8 @@ import server from '../../utils/api'
 import { useAuth } from '../../context/AuthContext'
 import GlobalContext from '../../context/GlobalContext'
 import ReactTagInput from '@pathofdev/react-tag-input'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 const subCategories = [
   'Math',
@@ -50,7 +52,7 @@ const Subjects = ({ setSubject }) => (
   </Accordion>
 )
 
-const Course = ({ setCourseCode, onSubmit }) => {
+const Extra = ({ setCourseCode, setDeadline, deadline, onSubmit, stepper }) => {
   const [validated, setValidated] = useState(false)
   const handleSubmit = event => {
     event.preventDefault()
@@ -78,6 +80,17 @@ const Course = ({ setCourseCode, onSubmit }) => {
           The course code will help to match you to the best Tutor
         </Form.Text>
       </Form.Group>
+      <Form.Group>
+        <Form.Label>Deadline</Form.Label>
+        <div className='date-container'>
+          <DatePicker
+            className='date_picker'
+            selected={deadline}
+            onChange={date => setDeadline(date)}
+          />
+        </div>
+      </Form.Group>
+
       <div style={{ marginTop: '20px', display: 'flex' }}>
         <Button
           variant='outline-primary'
@@ -111,7 +124,24 @@ const CEditor = ({ setContent }) => {
       {editorLoaded ? (
         <CKEditor
           editor={ClassicEditor}
-          data='<p>Start typing here ....</p>'
+          config={{
+            toolbar: [
+              'heading',
+              '|',
+              'bold',
+              'italic',
+              'blockQuote',
+              'link',
+              'numberedList',
+              'bulletedList',
+              'imageUpload',
+
+              '|',
+              'undo',
+              'redo'
+            ],
+            placeholder: 'Start typing here ....'
+          }}
           onChange={(e, editor) => setContent(editor.getData())}
         />
       ) : (
@@ -194,7 +224,6 @@ const QuestionForm = ({ setTitle, setContent, stepper, fields, setTags }) => {
       <div style={{ marginTop: '20px', display: 'flex' }}>
         <Button
           variant='outline-primary'
-          type='submit'
           onClick={() => stepper.current.previous()}
         >
           Previous
@@ -223,6 +252,7 @@ const Editor = () => {
   const { authUser, token } = useAuth()
   const [ready, setReady] = useState(false)
   const [tags, setTags] = useState([])
+  const [deadline, setDeadline] = useState(new Date())
 
   useEffect(() => {
     if (ready && authUser) {
@@ -237,7 +267,7 @@ const Editor = () => {
   }, [])
 
   const onSubmit = () => {
-    console.log('data', content, title, courseCode, subject)
+    console.log('data', content, title, courseCode, subject, tags, deadline)
     if (!authUser) {
       console.log('not logged in')
       gContext.toggleSignInModal()
@@ -286,7 +316,7 @@ const Editor = () => {
           <div className='step' data-target='#test-l-3'>
             <button className='step-trigger'>
               <span className='bs-stepper-circle'>3</span>
-              <span className='bs-stepper-label'>Course</span>
+              <span className='bs-stepper-label'>Extra Details</span>
             </button>
           </div>
         </div>
@@ -323,7 +353,13 @@ const Editor = () => {
             </div>
           </div>
           <div id='test-l-3' className='content'>
-            <Course setCourseCode={setCourseCode} onSubmit={onSubmit} />
+            <Extra
+              setCourseCode={setCourseCode}
+              onSubmit={onSubmit}
+              stepper={stepper}
+              deadline={deadline}
+              setDeadline={setDeadline}
+            />
           </div>
         </div>
       </div>

@@ -1,0 +1,23 @@
+.date_picker {
+    height: 48px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    padding: 12px;
+    color: #6b6e6f;
+    outline: inherit important;
+}
+
+input.date_picker :focus {
+    outline: inherit important;
+}
+
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__month-text--keyboard-selected,
+.react-datepicker__quarter-text--keyboard-selected,
+.react-datepicker__year-text--keyboard-selected {
+    background: #00b074 !important;
+}
+
+.react-datepicker-wrapper {
+    display: block !important;
+}
