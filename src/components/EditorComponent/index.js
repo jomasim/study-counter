@@ -8,6 +8,7 @@ import GlobalContext from '../../context/GlobalContext'
 import ReactTagInput from '@pathofdev/react-tag-input'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import UploadAdapterPlugin from '../../utils/Uploader'
 
 const subCategories = [
   'Math',
@@ -140,7 +141,8 @@ const CEditor = ({ setContent }) => {
               'undo',
               'redo'
             ],
-            placeholder: 'Start typing here ....'
+            placeholder: 'Start typing here ....',
+            extraPlugins: [UploadAdapterPlugin]
           }}
           onChange={(e, editor) => setContent(editor.getData())}
         />
