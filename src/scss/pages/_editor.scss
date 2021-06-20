@@ -1,3 +1,11 @@
 .bs-stepper-circle {
     background-color: #00b074 !important;
 }
+
+.ck-focused {
+    border: 1px solid #c4c4c4 !important;
+}
+
+.errorck .ck-focused {
+    border: 1px solid #e04c4c !important;
+}

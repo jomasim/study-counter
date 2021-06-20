@@ -83,13 +83,15 @@ const Extra = ({ setCourseCode, setDeadline, deadline, onSubmit, stepper }) => {
       </Form.Group>
       <Form.Group>
         <Form.Label>Deadline</Form.Label>
-        <div className='date-container'>
-          <DatePicker
-            className='date_picker'
-            selected={deadline}
-            onChange={date => setDeadline(date)}
-          />
-        </div>
+
+        <DatePicker
+          className='date_picker form-control'
+          selected={deadline}
+          required
+          value={deadline}
+          onChange={date => setDeadline(date)}
+        />
+        <Form.Control.Feedback>Deadline is required</Form.Control.Feedback>
       </Form.Group>
 
       <div style={{ marginTop: '20px', display: 'flex' }}>
@@ -287,7 +289,9 @@ const Editor = () => {
         body: content,
         title,
         course_code: courseCode,
-        subject_code: subject
+        subject_code: subject,
+        deadline,
+        tags
       })
       .then(res => {
         alert('success here')
