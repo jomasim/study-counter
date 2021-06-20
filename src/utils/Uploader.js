@@ -24,7 +24,7 @@ class MyUploadAdapter {
     const xhr = (this.xhr = new XMLHttpRequest())
     xhr.open(
       'POST',
-      `http://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
       true
     )
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
