@@ -2,6 +2,7 @@ import { useState } from 'react'
 import firebase from 'firebase/app'
 import { firebaseStorage } from '../../../firebase'
 import shortid from 'shortid'
+import { toast } from 'react-toastify'
 
 import { FilePond, registerPlugin } from 'react-filepond'
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
@@ -19,8 +20,8 @@ const FileUpload = ({ docs, setDocs }) => {
     data.push(id)
     setDocs(data)
   }
-  const onRequestClear = (id) => {
-      console.log('we clear here', id)
+  const onRequestClear = id => {
+    console.log('we clear here', id)
   }
   return (
     <FilePond
@@ -53,6 +54,7 @@ const FileUpload = ({ docs, setDocs }) => {
             err => {
               // provide errors
               error(err.message)
+              toast(err.message, { type: 'error', position: 'top-right' })
             },
             () => {
               // the file has been uploaded
@@ -85,6 +87,7 @@ const FileUpload = ({ docs, setDocs }) => {
             })
             .catch(err => {
               error(err.message)
+              toast(err.message, { type: 'error', position: 'top-right' })
               abort()
             })
         }

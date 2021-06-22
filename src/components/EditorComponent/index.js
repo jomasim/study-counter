@@ -10,6 +10,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import UploadAdapterPlugin from '../../utils/Uploader'
 import FileUpload from '../FileUpload'
+import { toast } from 'react-toastify'
 
 const subCategories = [
   'Math',
@@ -234,8 +235,13 @@ const QuestionForm = ({
           Add tags to describe your question e.g Math, Science, Algebra
         </Form.Text>
       </Form.Group>
-
-      <FileUpload docs={files} setDocs={setFiles} />
+      <Form.Group style={{ marginTop: '20px' }}>
+        <Form.Label>Attachments</Form.Label>
+        <FileUpload docs={files} setDocs={setFiles} />
+        <Form.Text muted>
+          Add files i.e pdf relation to your question
+        </Form.Text>
+      </Form.Group>
 
       <div style={{ marginTop: '20px', display: 'flex' }}>
         <Button
@@ -284,13 +290,10 @@ const Editor = () => {
   }, [])
 
   const onSubmit = () => {
-    console.log('data', content, title, courseCode, subject, tags, deadline, files)
     if (!authUser) {
-      console.log('not logged in')
       gContext.toggleSignInModal()
       setReady(true)
     } else if (authUser) {
-      console.log('logged in')
       handleQuestion()
     }
   }
@@ -308,10 +311,10 @@ const Editor = () => {
         files
       })
       .then(res => {
-        alert('success here')
+        toast('Success!', { type: 'success', position: 'top-right' })
       })
       .catch(err => {
-        console.log('error', err)
+        toast('An error occured!', { type: 'error', position: 'top-right' })
       })
   }
 

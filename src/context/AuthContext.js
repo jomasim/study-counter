@@ -3,6 +3,7 @@ import { useEffect, createContext, useContext } from 'react'
 import { useState } from 'react'
 import { firebaseAuth } from '../../firebase'
 import GlobalContext from './GlobalContext'
+import { toast } from 'react-toastify'
 
 const formatAuthUser = user => ({
   uid: user.uid,
@@ -48,6 +49,7 @@ export const useFirebaseAuth = () => {
       })
       .catch(err => {
         setLoading(false)
+        toast(err.message, { type: 'error', position: 'top-right' })
       })
   }
   const signInWithEmailAndPassword = (email, password, redirect) => {
@@ -66,6 +68,7 @@ export const useFirebaseAuth = () => {
       .catch(err => {
         setLoading(false)
         setLoginResponse({ ...err })
+        toast(err.message, { type: 'error', position: 'top-right' })
       })
   }
 
