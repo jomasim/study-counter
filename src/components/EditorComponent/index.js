@@ -9,6 +9,7 @@ import ReactTagInput from '@pathofdev/react-tag-input'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import UploadAdapterPlugin from '../../utils/Uploader'
+import FileUpload from '../FileUpload'
 
 const subCategories = [
   'Math',
@@ -155,9 +156,18 @@ const CEditor = ({ setContent }) => {
   )
 }
 
-const QuestionForm = ({ setTitle, setContent, stepper, fields, setTags }) => {
+const QuestionForm = ({
+  setTitle,
+  setContent,
+  stepper,
+  fields,
+  setTags,
+  files,
+  setFiles
+}) => {
   const [validated, setValidated] = useState(false)
   const [errors, setErrors] = useState({})
+
   const handleSubmit = event => {
     event.preventDefault()
     event.stopPropagation()
@@ -225,6 +235,8 @@ const QuestionForm = ({ setTitle, setContent, stepper, fields, setTags }) => {
         </Form.Text>
       </Form.Group>
 
+      <FileUpload docs={files} setDocs={setFiles} />
+
       <div style={{ marginTop: '20px', display: 'flex' }}>
         <Button
           variant='outline-primary'
@@ -257,6 +269,7 @@ const Editor = () => {
   const [ready, setReady] = useState(false)
   const [tags, setTags] = useState([])
   const [deadline, setDeadline] = useState(new Date())
+  const [files, setFiles] = useState([])
 
   useEffect(() => {
     if (ready && authUser) {
@@ -271,7 +284,7 @@ const Editor = () => {
   }, [])
 
   const onSubmit = () => {
-    console.log('data', content, title, courseCode, subject, tags, deadline)
+    console.log('data', content, title, courseCode, subject, tags, deadline, files)
     if (!authUser) {
       console.log('not logged in')
       gContext.toggleSignInModal()
@@ -291,7 +304,8 @@ const Editor = () => {
         course_code: courseCode,
         subject_code: subject,
         deadline,
-        tags
+        tags,
+        files
       })
       .then(res => {
         alert('success here')
@@ -335,6 +349,8 @@ const Editor = () => {
               stepper={stepper}
               setTags={setTags}
               fields={{ title, content, tags }}
+              files={files}
+              setFiles={setFiles}
             />
           </div>
           <div id='test-l-2' className='content'>
