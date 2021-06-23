@@ -11,6 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import UploadAdapterPlugin from '../../utils/Uploader'
 import FileUpload from '../FileUpload'
 import { toast } from 'react-toastify'
+import { useRouter } from 'next/router'
 
 const subCategories = [
   'Math',
@@ -238,9 +239,7 @@ const QuestionForm = ({
       <Form.Group style={{ marginTop: '20px' }}>
         <Form.Label>Attachments</Form.Label>
         <FileUpload docs={files} setDocs={setFiles} />
-        <Form.Text muted>
-          Add files i.e pdf relation to your question
-        </Form.Text>
+        <Form.Text muted>Add files i.e pdf relation to your question</Form.Text>
       </Form.Group>
 
       <div style={{ marginTop: '20px', display: 'flex' }}>
@@ -266,6 +265,7 @@ const QuestionForm = ({
 
 const Editor = () => {
   const gContext = useContext(GlobalContext)
+  const router = useRouter()
   const stepper = useRef()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -312,6 +312,7 @@ const Editor = () => {
       })
       .then(res => {
         toast('Success!', { type: 'success', position: 'top-right' })
+        router.push('/dashboard')
       })
       .catch(err => {
         toast('An error occured!', { type: 'error', position: 'top-right' })

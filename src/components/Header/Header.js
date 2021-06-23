@@ -50,11 +50,113 @@ const ToggleButton = styled.button`
     dark ? theme.colors.lightShade : theme.colors.heading}!important;
 `
 
+const ProfileMenu = ({ imgP, size, router }) => {
+  const { signOut } = useAuth()
+  return (
+    <div className='header-btn-devider ml-auto ml-lg-5 pl-2 d-none d-xs-flex align-items-center'>
+      <div>
+        <Link href='/#'>
+          <a className='px-3 ml-7 font-size-7 notification-block flex-y-center position-relative'>
+            <i className='fas fa-bell heading-default-color'></i>
+            <span className='font-size-3 count font-weight-semibold text-white bg-primary circle-24 border border-width-3 border border-white'>
+              3
+            </span>
+          </a>
+        </Link>
+      </div>
+      <div>
+        <Dropdown className='show-gr-dropdown py-5'>
+          <Dropdown.Toggle as='a' className='proile media ml-7 flex-y-center'>
+            <div className='circle-40'>
+              <img src={imgP} alt='' />
+            </div>
+            <i className='fas fa-chevron-down heading-default-color ml-6'></i>
+          </Dropdown.Toggle>
+          {size.width <= 991 ? (
+            <Dropdown.Menu
+              className='gr-menu-dropdown border-0 border-width-2 py-2 w-auto bg-default'
+              key='1'
+            >
+              <Link href='/#'>
+                <a
+                  className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
+                  onClick={() => {
+                    router.push('/dashboard')
+                  }}
+                >
+                  My Orders
+                </a>
+              </Link>
+              <Link href='/#'>
+                <a className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'>
+                  Settings
+                </a>
+              </Link>
+              <Link href='/#'>
+                <a className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'>
+                  Edit Profile
+                </a>
+              </Link>
+              <Link href='/#'>
+                <a
+                  className=' dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
+                  onClick={() => {
+                    signOut()
+                    router.push('/')
+                  }}
+                >
+                  Log Out
+                </a>
+              </Link>
+            </Dropdown.Menu>
+          ) : (
+            <div
+              className='dropdown-menu gr-menu-dropdown dropdown-right border-0 border-width-2 py-2 w-auto bg-default'
+              key='2'
+            >
+              <Link href='/#'>
+                <a
+                  className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
+                  onClick={() => {
+                    router.push('/dashboard')
+                  }}
+                >
+                  My Orders
+                </a>
+              </Link>
+              <Link href='/#'>
+                <a className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'>
+                  Settings
+                </a>
+              </Link>
+              <Link href='/#'>
+                <a className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'>
+                  Edit Profile
+                </a>
+              </Link>
+              <Link href='/#'>
+                <a
+                  className=' dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
+                  onClick={() => {
+                    signOut()
+                    router.push('/')
+                  }}
+                >
+                  Log Out
+                </a>
+              </Link>
+            </div>
+          )}
+        </Dropdown>
+      </div>
+    </div>
+  )
+}
 const Header = () => {
   const gContext = useContext(GlobalContext)
   const [showScrolling, setShowScrolling] = useState(false)
   const [showReveal, setShowReveal] = useState(false)
-  const { signOut, authUser } = useAuth()
+  const { authUser } = useAuth()
   const router = useRouter()
 
   const size = useWindowSize()
@@ -257,108 +359,35 @@ const Header = () => {
               </div>
             )}
 
-            {gContext.header.button === 'profile' && (
-              <div className='header-btn-devider ml-auto ml-lg-5 pl-2 d-none d-xs-flex align-items-center'>
-                <div>
-                  <Link href='/#'>
-                    <a className='px-3 ml-7 font-size-7 notification-block flex-y-center position-relative'>
-                      <i className='fas fa-bell heading-default-color'></i>
-                      <span className='font-size-3 count font-weight-semibold text-white bg-primary circle-24 border border-width-3 border border-white'>
-                        3
-                      </span>
-                    </a>
-                  </Link>
-                </div>
-                <div>
-                  <Dropdown className='show-gr-dropdown py-5'>
-                    <Dropdown.Toggle
-                      as='a'
-                      className='proile media ml-7 flex-y-center'
-                    >
-                      <div className='circle-40'>
-                        <img src={imgP} alt='' />
-                      </div>
-                      <i className='fas fa-chevron-down heading-default-color ml-6'></i>
-                    </Dropdown.Toggle>
-                    {size.width <= 991 ? (
-                      <Dropdown.Menu
-                        className='gr-menu-dropdown border-0 border-width-2 py-2 w-auto bg-default'
-                        key='1'
-                      >
-                        <Link href='/#'>
-                          <a className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'>
-                            Settings
-                          </a>
-                        </Link>
-                        <Link href='/#'>
-                          <a className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'>
-                            Edit Profile
-                          </a>
-                        </Link>
-                        <Link href='/#'>
-                          <a
-                            className=' dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
-                            onClick={() => {
-                              signOut()
-                              router.push('/')
-                            }}
-                          >
-                            Log Out
-                          </a>
-                        </Link>
-                      </Dropdown.Menu>
-                    ) : (
-                      <div
-                        className='dropdown-menu gr-menu-dropdown dropdown-right border-0 border-width-2 py-2 w-auto bg-default'
-                        key='2'
-                      >
-                        <Link href='/#'>
-                          <a className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'>
-                            Settings
-                          </a>
-                        </Link>
-                        <Link href='/#'>
-                          <a className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'>
-                            Edit Profile
-                          </a>
-                        </Link>
-                        <Link href='/#'>
-                          <a
-                            className=' dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
-                            onClick={() => {
-                              signOut()
-                              router.push('/')
-                            }}
-                          >
-                            Log Out
-                          </a>
-                        </Link>
-                      </div>
-                    )}
-                  </Dropdown>
-                </div>
-              </div>
+            {authUser && gContext.header.button === 'profile' && (
+              <ProfileMenu size={size} imgP={imgP} router={router} />
             )}
 
             {gContext.header.button === 'account' && (
-              <div className='header-btns header-btn-devider ml-auto pr-2 ml-lg-6 d-none d-xs-flex'>
-                <a
-                  className='btn btn-transparent text-uppercase font-size-3 heading-default-color focus-reset'
-                  href='/#'
-                  onClick={e => {
-                    e.preventDefault()
-                    gContext.toggleSignInModal()
-                  }}
-                >
-                  Log In
-                </a>
-                <a
-                  className={`btn btn-${gContext.header.variant} text-uppercase font-size-3`}
-                  href='https://www.facebook.com/myStudycounter'
-                >
-                  Order Now
-                </a>
-              </div>
+              <React.Fragment>
+                {authUser ? (
+                  <ProfileMenu size={size} imgP={imgP} router={router} />
+                ) : (
+                  <div className='header-btns header-btn-devider ml-auto pr-2 ml-lg-6 d-none d-xs-flex'>
+                    <a
+                      className='btn btn-transparent text-uppercase font-size-3 heading-default-color focus-reset'
+                      href='/#'
+                      onClick={e => {
+                        e.preventDefault()
+                        gContext.toggleSignInModal()
+                      }}
+                    >
+                      Log In
+                    </a>
+                    <a
+                      className={`btn btn-${gContext.header.variant} text-uppercase font-size-3`}
+                      href='https://www.facebook.com/myStudycounter'
+                    >
+                      Order Now
+                    </a>
+                  </div>
+                )}
+              </React.Fragment>
             )}
 
             <ToggleButton
