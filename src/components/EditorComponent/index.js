@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import 'bs-stepper/dist/css/bs-stepper.min.css'
 import '@pathofdev/react-tag-input/build/index.css'
-import { Accordion, Card, Button, Form } from 'react-bootstrap'
+import { Button, Form } from 'react-bootstrap'
 import server from '../../utils/api'
 import { useAuth } from '../../context/AuthContext'
 import GlobalContext from '../../context/GlobalContext'
@@ -12,8 +12,115 @@ import UploadAdapterPlugin from '../../utils/Uploader'
 import FileUpload from '../FileUpload'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
+import { FaCaretDown, FaCaretUp } from 'react-icons/fa'
+import classnames from 'classnames'
 
-const subCategories = [
+const SelectSubject = ({ options = [], subject, setSubject, stepper }) => {
+  const [search, setSearch] = useState('')
+  const [errors, setErrors] = useState({})
+
+  const [visibility, setVisibility] = useState(false)
+  const handleSubmit = event => {
+    event.preventDefault()
+    event.stopPropagation()
+    if (subject !== '') {
+      stepper.current.next()
+    } else {
+      setErrors({ ...errors, subject: { message: 'Subject is required' } })
+    }
+  }
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Form.Group>
+        <div
+          className='select'
+          onClick={e => {
+            setVisibility(!visibility)
+            setSearch('')
+          }}
+          style={
+            errors.subject
+              ? { border: `1px solid #f71e3f` }
+              : { border: `1px solid #e1e1e1` }
+          }
+        >
+          <div className='selected-option'>
+            <span>{subject === '' ? 'Select a subject' : subject}</span>
+            {visibility ? <FaCaretDown /> : <FaCaretUp />}
+          </div>
+        </div>
+        <div id='error'>
+          {errors.subject && (
+            <span style={{ color: 'red', fontWeight: '200', fontSize: '13px' }}>
+              {errors.subject.message}
+            </span>
+          )}
+        </div>
+        <Form.Text muted>Select subject e.g Math, Science, Algebra</Form.Text>
+      </Form.Group>
+      {visibility && (
+        <div className='options'>
+          <input
+            style={{ marginTop: '10px' }}
+            className='search-input-select'
+            type='text'
+            placeholder='Search field'
+            onSubmit={e => e.preventDefault()}
+            value={search}
+            onChange={e => {
+              setSearch(e.target.value)
+              setErrors({ ...errors, subject: null })
+            }}
+          />
+          <ul>
+            {options
+              .filter(option =>
+                option.toLowerCase().includes(search.toLowerCase())
+              )
+              .map((option, index) => (
+                <li
+                  key={index}
+                  className={subject === option ? 'active-option' : null}
+                  onClick={() => {
+                    setErrors({ ...errors, subject: null })
+                    setSubject(option)
+                  }}
+                >
+                  {option}
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
+
+      <div style={{ marginTop: '20px', display: 'flex' }}>
+        <Button
+          variant='outline-primary'
+          onClick={() => stepper.current.previous()}
+        >
+          Previous
+        </Button>
+        <Button
+          style={{
+            marginLeft: '20px'
+          }}
+          variant='primary'
+          type='submit'
+        >
+          Next
+        </Button>
+      </div>
+    </Form>
+  )
+}
+
+const subjs = [
+  'Social Science',
+  'Sociology',
+  'Anatomy',
+  'Biochemistry',
+  'Financial Accounting',
   'Math',
   'Business',
   'Science',
@@ -21,40 +128,6 @@ const subCategories = [
   'Arts & Humanities',
   'Social Science'
 ]
-
-const subjs = [
-  'Social Science',
-  'Sociology',
-  'Anatomy',
-  'Biochemistry',
-  'Financial Accounting'
-]
-
-const Subjects = ({ setSubject }) => (
-  <Accordion defaultActiveKey="'0'" style={{ marginTop: '20px' }}>
-    {subCategories.map((category, index) => (
-      <Card key={index}>
-        <Accordion.Toggle as={Card.Header} eventKey={`'${index}'`}>
-          {category}
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey={`'${index}'`}>
-          <Card.Body>
-            {subjs.map((subject, index) => (
-              <Button
-                style={{ margin: '2px' }}
-                key={index}
-                variant='outline-info'
-                onClick={() => setSubject(subject)}
-              >
-                {subject}
-              </Button>
-            ))}
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-    ))}
-  </Accordion>
-)
 
 const Extra = ({ setCourseCode, setDeadline, deadline, onSubmit, stepper }) => {
   const [validated, setValidated] = useState(false)
@@ -358,25 +431,12 @@ const Editor = () => {
             />
           </div>
           <div id='test-l-2' className='content'>
-            {subject && <Card body>{subject}</Card>}
-            <Subjects setSubject={setSubject} />
-            <div style={{ marginTop: '20px', display: 'flex' }}>
-              <Button
-                variant='outline-primary'
-                onClick={() => stepper.current.previous()}
-              >
-                Previous
-              </Button>
-              <Button
-                style={{
-                  marginLeft: '20px'
-                }}
-                variant='primary'
-                onClick={() => stepper.current.next()}
-              >
-                Next
-              </Button>
-            </div>
+            <SelectSubject
+              options={subjs}
+              setSubject={setSubject}
+              subject={subject}
+              stepper={stepper}
+            />
           </div>
           <div id='test-l-3' className='content'>
             <Extra
