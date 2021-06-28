@@ -13,7 +13,7 @@ import FileUpload from '../FileUpload'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 import { FaCaretDown, FaCaretUp } from 'react-icons/fa'
-import classnames from 'classnames'
+
 
 const SelectSubject = ({ options = [], subject, setSubject, stepper }) => {
   const [search, setSearch] = useState('')
