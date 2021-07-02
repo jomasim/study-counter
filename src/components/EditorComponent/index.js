@@ -6,14 +6,13 @@ import server from '../../utils/api'
 import { useAuth } from '../../context/AuthContext'
 import GlobalContext from '../../context/GlobalContext'
 import ReactTagInput from '@pathofdev/react-tag-input'
-import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import UploadAdapterPlugin from '../../utils/Uploader'
 import FileUpload from '../FileUpload'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 import { FaCaretDown, FaCaretUp } from 'react-icons/fa'
-
+import moment from 'moment'
 
 const SelectSubject = ({ options = [], subject, setSubject, stepper }) => {
   const [search, setSearch] = useState('')
@@ -85,6 +84,7 @@ const SelectSubject = ({ options = [], subject, setSubject, stepper }) => {
                   onClick={() => {
                     setErrors({ ...errors, subject: null })
                     setSubject(option)
+                    setVisibility(!visibility)
                   }}
                 >
                   {option}
@@ -129,7 +129,7 @@ const subjs = [
   'Social Science'
 ]
 
-const Extra = ({ setCourseCode, setDeadline, deadline, onSubmit, stepper }) => {
+const Extra = ({ setCourseCode, setDeadline, onSubmit, stepper }) => {
   const [validated, setValidated] = useState(false)
   const handleSubmit = event => {
     event.preventDefault()
@@ -139,6 +139,13 @@ const Extra = ({ setCourseCode, setDeadline, deadline, onSubmit, stepper }) => {
       onSubmit()
     }
     setValidated(true)
+  }
+  const setDate = value => {
+    const time = value.split(' ')
+    const date = moment()
+      .add(time[0], time[1])
+      .format('DD MM YYYY hh')
+    setDeadline(date)
   }
   return (
     <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -160,13 +167,19 @@ const Extra = ({ setCourseCode, setDeadline, deadline, onSubmit, stepper }) => {
       <Form.Group>
         <Form.Label>Deadline</Form.Label>
 
-        <DatePicker
-          className='date_picker form-control'
-          selected={deadline}
-          required
-          value={deadline}
-          onChange={date => setDeadline(date)}
-        />
+        <Form.Control as='select' onChange={e => setDate(e.target.value)}>
+          <option>3 Hours</option>
+          <option>6 Hours</option>
+          <option>12 Hours</option>
+          <option>1 Days</option>
+          <option>2 Days</option>
+          <option>3 Days</option>
+          <option>4 Days</option>
+          <option>1 Week</option>
+          <option>2 Weeks</option>
+          <option>3 Weeks</option>
+          <option>1 Month</option>
+        </Form.Control>
         <Form.Control.Feedback>Deadline is required</Form.Control.Feedback>
       </Form.Group>
 
@@ -347,7 +360,7 @@ const Editor = () => {
   const { authUser, token } = useAuth()
   const [ready, setReady] = useState(false)
   const [tags, setTags] = useState([])
-  const [deadline, setDeadline] = useState(new Date())
+  const [deadline, setDeadline] = useState('')
   const [files, setFiles] = useState([])
 
   useEffect(() => {
@@ -443,7 +456,6 @@ const Editor = () => {
               setCourseCode={setCourseCode}
               onSubmit={onSubmit}
               stepper={stepper}
-              deadline={deadline}
               setDeadline={setDeadline}
             />
           </div>

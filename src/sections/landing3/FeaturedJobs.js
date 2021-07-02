@@ -4,6 +4,11 @@ import server from '../../utils/api'
 import { useAuth } from '../../context/AuthContext'
 import TruncateMarkup from 'react-truncate-markup'
 import renderHTML from 'react-render-html'
+import ReactTimeAgo from 'react-time-ago'
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
+
+TimeAgo.addLocale(en)
 
 const FeaturedJobs = () => {
   const [data, setData] = useState([])
@@ -41,7 +46,7 @@ const FeaturedJobs = () => {
           >
             {data &&
               data.map((question, index) => (
-                <div className='mb-8' style={{ width: '100%' }} key={index}>
+                <div className='mb-8' style={{ width: '70%' }} key={index}>
                   {/* <!-- Single Featured Job --> */}
                   <div className='pt-2 px-xl-9 px-lg-7 px-7 pb-7 light-mode-texts bg-white rounded hover-shadow-3 '>
                     <div className='row'>
@@ -107,7 +112,9 @@ const FeaturedJobs = () => {
                               `}
                             ></span>
                             <span className='font-weight-semibold'>
-                              2 hrs ago
+                              <ReactTimeAgo
+                                date={new Date(question.created_at)}
+                              />
                             </span>
                           </li>
                         </ul>

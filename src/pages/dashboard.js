@@ -222,8 +222,8 @@ const DashboardMain = () => {
                     </thead>
                     <tbody>
                       {data &&
-                        data.map(question => (
-                          <tr className='border border-color-2'>
+                        data.map((question, key) => (
+                          <tr className='border border-color-2' key={key}>
                             <th
                               scope='row'
                               className='pl-6 border-0 py-7 min-width-px-235'
@@ -243,12 +243,12 @@ const DashboardMain = () => {
                             </td>
                             <td className='table-y-middle py-7 min-width-px-125'>
                               <h3 className='font-size-4 font-weight-normal text-black-2 mb-0'>
-                               {question.course_code}
+                                {question.course_code}
                               </h3>
                             </td>
                             <td className='table-y-middle py-7 min-width-px-155'>
                               <h3 className='font-size-4 font-weight-normal text-black-2 mb-0'>
-                               {question.created_at}
+                                {question.created_at}
                               </h3>
                             </td>
                             <td className='table-y-middle py-7 min-width-px-205'>
