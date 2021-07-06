@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Collapse } from 'react-bootstrap'
 import Link from 'next/link'
 import PageWrapper from '../../components/PageWrapper'
+import CEditor from '../../components/CEditor'
 import server from '../../utils/api'
 import { useAuth } from '../../context/AuthContext'
 import { useRouter } from 'next/router'
@@ -88,6 +89,7 @@ const Card = ({ question }) => (
 const Question = () => {
   const [openItem, setOpenItem] = useState(1)
   const [question, setQuestion] = useState({})
+  const [answer, setAnswer] = useState({})
   const { token } = useAuth()
   const router = useRouter()
   const { id } = router.query
@@ -118,6 +120,19 @@ const Question = () => {
                   data-aos-duration='1000'
                 >
                   {question && <Card question={question} />}
+                </div>
+
+                <div style={{ marginTop: '20px' }}>
+                  <span
+                    style={{
+                      color: '#1d1c1c',
+                      fontWeight: '500',
+                      marginBottom: '10px'
+                    }}
+                  >
+                    Your Answer
+                  </span>
+                  <CEditor setContent={setAnswer} />
                 </div>
               </div>
               <div
