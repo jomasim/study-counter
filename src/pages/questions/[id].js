@@ -94,10 +94,8 @@ const Question = () => {
 
   useEffect(() => {
     const api = server(token)
-    console.log('id', id)
     if (id) {
       api.get(`/question/${id}`).then(res => {
-        console.log('data', res.data)
         setQuestion(res.data)
       })
     }
