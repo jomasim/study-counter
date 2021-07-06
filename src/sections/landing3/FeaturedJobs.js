@@ -18,6 +18,7 @@ const FeaturedJobs = () => {
     const api = server(token)
     if (!data.length) {
       api.get('/question').then(res => {
+        console.log('data', res.data)
         setData(res.data.slice(0, 4))
       })
     }
@@ -54,7 +55,7 @@ const FeaturedJobs = () => {
                         <div className='media align-items-center'>
                           <div>
                             <h3 className='mb-0'>
-                              <Link href='/#'>
+                              <Link href={`/questions/${question._id}`}>
                                 <a className='font-size-3 heading-default-color'>
                                   {question.title}
                                 </a>
