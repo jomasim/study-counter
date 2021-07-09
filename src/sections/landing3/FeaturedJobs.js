@@ -18,7 +18,6 @@ const FeaturedJobs = () => {
     const api = server(token)
     if (!data.length) {
       api.get('/question').then(res => {
-        console.log('data', res.data)
         setData(res.data.slice(0, 4))
       })
     }
@@ -55,7 +54,11 @@ const FeaturedJobs = () => {
                         <div className='media align-items-center'>
                           <div>
                             <h3 className='mb-0'>
-                              <Link href={`/questions/${question._id}`}>
+                              <Link
+                                href={`/questions/${
+                                  question._id
+                                }/${question.title.replace(/ /g, '-')}`}
+                              >
                                 <a className='font-size-3 heading-default-color'>
                                   {question.title}
                                 </a>
@@ -66,7 +69,9 @@ const FeaturedJobs = () => {
                       </div>
                     </div>
                     <TruncateMarkup lines={4}>
-                      <div class="q-content">{renderHTML(question.body)}</div>
+                      <div className='q-content'>
+                        {renderHTML(question.body)}
+                      </div>
                     </TruncateMarkup>
                     <div className='row pt-1'>
                       <div className='col-md-7'>

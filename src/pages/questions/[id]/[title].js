@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { Collapse } from 'react-bootstrap'
 import Link from 'next/link'
-import PageWrapper from '../../components/PageWrapper'
-import CEditor from '../../components/CEditor'
-import server from '../../utils/api'
-import { useAuth } from '../../context/AuthContext'
+import PageWrapper from '../../../components/PageWrapper'
+import CEditor from '../../../components/CEditor'
+import server from '../../../utils/api'
+import { useAuth } from '../../../context/AuthContext'
 import { useRouter } from 'next/router'
 import renderHTML from 'react-render-html'
 import ReactTimeAgo from 'react-time-ago'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import { FaThumbsUp, FaThumbsDown, FaComment, FaStar } from 'react-icons/fa'
-import imgP from '../../assets/image/header-profile.png'
+import imgP from '../../../assets/image/header-profile.png'
 
 TimeAgo.addLocale(en)
 
@@ -157,16 +157,16 @@ const Question = () => {
   const [answer, setAnswer] = useState({})
   const { token } = useAuth()
   const router = useRouter()
-  const { id } = router.query
+  const { id, title } = router.query
 
   useEffect(() => {
     const api = server(token)
-    if (id) {
+    if (title) {
       api.get(`/question/${id}`).then(res => {
         setQuestion(res.data)
       })
     }
-  }, [id])
+  }, [title])
 
   return (
     <>
