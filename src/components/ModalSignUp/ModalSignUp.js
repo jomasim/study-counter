@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import styled from 'styled-components'
-import { Modal, Spinner } from 'react-bootstrap'
+import { Modal, Spinner, Form } from 'react-bootstrap'
 import GlobalContext from '../../context/GlobalContext'
 import { useAuth } from '../../context/AuthContext'
 
@@ -16,6 +16,7 @@ const ModalSignUp = props => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [role, setRole] = useState('student')
   const [validation, setValidation] = useState({})
   const { loading, signUpWithEmailAndPassword } = useAuth()
   const gContext = useContext(GlobalContext)
@@ -41,7 +42,8 @@ const ModalSignUp = props => {
   const handleSubmit = e => {
     e.preventDefault()
     if (validateForm()) {
-      signUpWithEmailAndPassword(email, password, '/dashboard')
+      console.log(role, 'here')
+      // signUpWithEmailAndPassword(email, password, role, '/dashboard')
     }
   }
 
@@ -134,6 +136,30 @@ const ModalSignUp = props => {
             <div className='col-lg-7 col-md-6'>
               <div className='bg-white-2 h-100 px-11 pt-11 pb-7'>
                 <form action='/'>
+                  <div className='form-group'>
+                    <label className='font-size-4 text-black-2 font-weight-semibold line-height-reset mr-4'>
+                      Sign up as:
+                    </label>
+                    <Form.Check
+                      label='Student'
+                      type='radio'
+                      aria-label='Student'
+                      defaultChecked
+                      inline
+                      value='student'
+                      name="group1"
+                      onChange={e => setRole(e.target.value)}
+                    />
+                    <Form.Check
+                      inline
+                      label='Tutor'
+                      type='radio'
+                      aria-label='Tutor'
+                      name="group1"
+                      value='tutor'
+                      onChange={e => setRole(e.target.value)}
+                    />
+                  </div>
                   <div className='form-group'>
                     <label
                       htmlFor='email2'

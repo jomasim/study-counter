@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { firebaseAuth } from '../../firebase'
 import GlobalContext from './GlobalContext'
 import { toast } from 'react-toastify'
+import server from '../utils/api'
 
 const formatAuthUser = user => ({
   uid: user.uid,
@@ -14,6 +15,7 @@ export const useFirebaseAuth = () => {
   const [authUser, setAuthUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [token, setToken] = useState(null)
+  const [claims, setClaims] = useState(null)
   const [loginResponse, setLoginResponse] = useState({})
   const router = useRouter()
   const gContext = useContext(GlobalContext)
@@ -32,14 +34,17 @@ export const useFirebaseAuth = () => {
       return
     }
     var formattedUser = formatAuthUser(authState)
-    const idToken = await authState.getIdToken()
+    const idToken = await authState.getIdToken(true)
+    const idTokenResult = await authState.getIdTokenResult()
+    setClaims(idTokenResult.claims)
     setToken(idToken)
     setAuthUser(formattedUser)
     setLoading(false)
   }
-  const signUpWithEmailAndPassword = (email, password, redirect) => {
-    firebaseAuth
-      .createUserWithEmailAndPassword(email, password)
+  const signUpWithEmailAndPassword = (email, password, role, redirect) => {
+    const api = server()
+    api
+      .post('/user', { email, password, role })
       .then(res => {
         setLoading(false)
         gContext.toggleSignUpModal()
@@ -85,6 +90,7 @@ export const useFirebaseAuth = () => {
     signInWithEmailAndPassword,
     signUpWithEmailAndPassword,
     token,
+    claims,
     loginResponse
   }
 }
@@ -96,6 +102,7 @@ export const AuthContext = createContext({
   signInWithEmailAndPassword: async () => true,
   signUpWithEmailAndPassword: async () => true,
   token: null,
+  claims: null,
   loginResponse: {}
 })
 

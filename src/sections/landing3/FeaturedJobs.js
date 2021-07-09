@@ -66,7 +66,7 @@ const FeaturedJobs = () => {
                       </div>
                     </div>
                     <TruncateMarkup lines={4}>
-                      <div>{renderHTML(question.body)}</div>
+                      <div class="q-content">{renderHTML(question.body)}</div>
                     </TruncateMarkup>
                     <div className='row pt-1'>
                       <div className='col-md-7'>

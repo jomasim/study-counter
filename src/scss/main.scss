@@ -197,6 +197,10 @@
 
 @import 'theme-custom-styles';
 //custom css starts here
+.q-content img {
+    max-width: 100%;
+}
+
 @import 'pages/editor';
 @import 'components/date';
 @import 'components/selectsearch';
