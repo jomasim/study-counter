@@ -25,6 +25,16 @@ export const useFirebaseAuth = () => {
     setLoading(true)
   }
 
+  const handleRouting = idTokenResult => {
+    if (idTokenResult.claims.role === 'tutor') {
+      router.push('/tutor/home')
+    } else if (idTokenResult.claims.role === 'student') {
+      router.push('/student/home')
+    } else {
+      router.push('/student/home')
+    }
+  }
+
   const signOut = () => firebaseAuth.signOut().then(clear)
 
   const authStateChanged = async authState => {
@@ -43,13 +53,18 @@ export const useFirebaseAuth = () => {
   }
   const signUpWithEmailAndPassword = (email, password, role, redirect) => {
     const api = server()
+    setLoading(true)
     api
       .post('/user', { email, password, role })
-      .then(res => {
+      .then(async res => {
         setLoading(false)
         gContext.toggleSignUpModal()
+        const idToken = await res.user.getIdToken(true)
+        const idTokenResult = await res.user.getIdTokenResult()
+        setClaims(idTokenResult.claims)
+        setToken(idToken)
         if (redirect) {
-          router.push(redirect)
+          handleRouting(idTokenResult)
         }
       })
       .catch(err => {
@@ -58,16 +73,19 @@ export const useFirebaseAuth = () => {
       })
   }
   const signInWithEmailAndPassword = (email, password, redirect) => {
+    setLoading(true)
     firebaseAuth
       .signInWithEmailAndPassword(email, password)
       .then(async res => {
-        const idToken = await res.user.getIdToken()
+        const idToken = await res.user.getIdToken(true)
+        const idTokenResult = await res.user.getIdTokenResult()
+        setClaims(idTokenResult.claims)
         setToken(idToken)
         setLoading(false)
         setLoginResponse({ ...loginResponse, message: '' })
         gContext.toggleSignInModal()
         if (redirect) {
-          router.push(redirect)
+          handleRouting(idTokenResult)
         }
       })
       .catch(err => {

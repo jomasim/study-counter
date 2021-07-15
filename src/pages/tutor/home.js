@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import CountUp from 'react-countup'
 import LazyLoad from 'react-lazyload'
-import PageWrapper from '../components/PageWrapper'
-import { Select } from '../components/Core'
-import server from '../utils/api'
-import { useAuth } from '../context/AuthContext'
+import PageWrapper from '../../components/PageWrapper'
+import { Select } from '../../components/Core'
+import server from '../../utils/api'
+import { useAuth } from '../../context/AuthContext'
 
 import { useState } from 'react'
 import { useEffect } from 'react'
@@ -24,7 +24,7 @@ const DashboardMain = () => {
   useEffect(() => {
     const api = server(token)
     if (!data.length) {
-      api.get('/question/owner').then(res => {
+      api.get('/question').then(res => {
         setData(res.data)
       })
     }
@@ -204,13 +204,13 @@ const DashboardMain = () => {
                           scope='col'
                           className='pl-4 border-0 font-size-4 font-weight-normal'
                         >
-                          Created on
+                          Due
                         </th>
                         <th
                           scope='col'
                           className='pl-4 border-0 font-size-4 font-weight-normal'
                         >
-                          Total Applicants
+                          Status
                         </th>
                         <th
                           scope='col'
@@ -250,12 +250,18 @@ const DashboardMain = () => {
                             </td>
                             <td className='table-y-middle py-7 min-width-px-155'>
                               <h3 className='font-size-4 font-weight-normal text-black-2 mb-0'>
-                                {question.created_at}
+                                {question.deadline}
                               </h3>
                             </td>
                             <td className='table-y-middle py-7 min-width-px-205'>
-                              <h3 className='font-size-4 font-weight-bold text-black-2 mb-0'>
-                                47
+                              <h3
+                                className='font-size-4 font-weight-bold  mb-0'
+                                style={{
+                                  color: '#ff7f27',
+                                  textTransform: 'capitalize'
+                                }}
+                              >
+                                {question.status}
                               </h3>
                             </td>
                             <td className='table-y-middle py-7 min-width-px-80'>
@@ -263,15 +269,7 @@ const DashboardMain = () => {
                                 href='/#'
                                 className='font-size-3 font-weight-bold text-green text-uppercase'
                               >
-                                Edit
-                              </a>
-                            </td>
-                            <td className='table-y-middle py-7 min-width-px-100'>
-                              <a
-                                href='/#'
-                                className='font-size-3 font-weight-bold text-red-2 text-uppercase'
-                              >
-                                Delete
+                                Take
                               </a>
                             </td>
                           </tr>

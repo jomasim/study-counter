@@ -37,7 +37,7 @@ const ModalSignIn = props => {
   const handleSubmit = e => {
     e.preventDefault()
     if (validateForm()) {
-      signInWithEmailAndPassword(email, password, 'dashboard')
+      signInWithEmailAndPassword(email, password, true)
     }
   }
 

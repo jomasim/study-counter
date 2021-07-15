@@ -50,7 +50,7 @@ const ToggleButton = styled.button`
     dark ? theme.colors.lightShade : theme.colors.heading}!important;
 `
 
-const ProfileMenu = ({ imgP, size, router }) => {
+const ProfileMenu = ({ imgP, size, router, claims }) => {
   const { signOut } = useAuth()
   return (
     <div className='header-btn-devider ml-auto ml-lg-5 pl-2 d-none d-xs-flex align-items-center'>
@@ -77,16 +77,19 @@ const ProfileMenu = ({ imgP, size, router }) => {
               className='gr-menu-dropdown border-0 border-width-2 py-2 w-auto bg-default'
               key='1'
             >
-              <Link href='/#'>
-                <a
-                  className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
-                  onClick={() => {
-                    router.push('/dashboard')
-                  }}
-                >
-                  My Orders
-                </a>
-              </Link>
+              {claims.role === 'student' && (
+                <Link href='/#'>
+                  <a
+                    className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
+                    onClick={() => {
+                      router.push('/student/home')
+                    }}
+                  >
+                    My Orders
+                  </a>
+                </Link>
+              )}
+
               <Link href='/#'>
                 <a className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'>
                   Settings
@@ -118,7 +121,7 @@ const ProfileMenu = ({ imgP, size, router }) => {
                 <a
                   className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
                   onClick={() => {
-                    router.push('/dashboard')
+                    router.push('/student/home')
                   }}
                 >
                   My Orders
@@ -156,7 +159,7 @@ const Header = () => {
   const gContext = useContext(GlobalContext)
   const [showScrolling, setShowScrolling] = useState(false)
   const [showReveal, setShowReveal] = useState(false)
-  const { authUser } = useAuth()
+  const { authUser, claims } = useAuth()
   const router = useRouter()
 
   const size = useWindowSize()
@@ -366,7 +369,12 @@ const Header = () => {
             {gContext.header.button === 'account' && (
               <React.Fragment>
                 {authUser ? (
-                  <ProfileMenu size={size} imgP={imgP} router={router} />
+                  <ProfileMenu
+                    size={size}
+                    imgP={imgP}
+                    router={router}
+                    claims={claims}
+                  />
                 ) : (
                   <div className='header-btns header-btn-devider ml-auto pr-2 ml-lg-6 d-none d-xs-flex'>
                     <a

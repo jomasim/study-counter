@@ -42,8 +42,7 @@ const ModalSignUp = props => {
   const handleSubmit = e => {
     e.preventDefault()
     if (validateForm()) {
-      console.log(role, 'here')
-      // signUpWithEmailAndPassword(email, password, role, '/dashboard')
+      signUpWithEmailAndPassword(email, password, role, true)
     }
   }
 
@@ -147,7 +146,7 @@ const ModalSignUp = props => {
                       defaultChecked
                       inline
                       value='student'
-                      name="group1"
+                      name='group1'
                       onChange={e => setRole(e.target.value)}
                     />
                     <Form.Check
@@ -155,7 +154,7 @@ const ModalSignUp = props => {
                       label='Tutor'
                       type='radio'
                       aria-label='Tutor'
-                      name="group1"
+                      name='group1'
                       value='tutor'
                       onChange={e => setRole(e.target.value)}
                     />

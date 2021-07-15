@@ -22,8 +22,6 @@ import { get, merge } from 'lodash'
 // the full theme object
 import { theme as baseTheme } from '../../utils'
 import { useAuth } from '../../context/AuthContext'
-import { Spinner } from 'react-bootstrap'
-import { useRouter } from 'next/router'
 
 const Loader = styled.div`
   position: fixed;
@@ -55,16 +53,7 @@ const getTheme = mode =>
 const Layout = ({ children, pageContext }) => {
   const gContext = useContext(GlobalContext)
   const [visibleLoader, setVisibleLoader] = useState(true)
-  const { loading, authUser } = useAuth()
-  const router = useRouter()
-
-  useEffect(() => {
-    if (!loading && !authUser) {
-      router.push('/')
-    } else if (!loading && authUser) {
-      // router.push('/dashboard')
-    }
-  }, [loading])
+  const { authUser } = useAuth()
 
   useEffect(() => {
     AOS.init({ once: true })
@@ -92,22 +81,6 @@ const Layout = ({ children, pageContext }) => {
       false
     )
   }, [gContext])
-
-  if (pageContext.layout === 'dashboard' && loading) {
-    return (
-      <div
-        style={{
-          position: 'absolute',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          left: '50%'
-        }}
-        className='skelton'
-      >
-        <Spinner animation='grow' variant='primary'></Spinner>
-      </div>
-    )
-  }
 
   if (pageContext.layout === 'bare') {
     return (
@@ -169,9 +142,7 @@ const Layout = ({ children, pageContext }) => {
       </ThemeProvider>
     )
   }
-  if (pageContext.layout === 'dashboard' && !authUser && !loading) {
-    return null
-  }
+
   return (
     <>
       <ThemeProvider

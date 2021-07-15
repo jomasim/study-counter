@@ -1,4 +1,5 @@
 // import App from 'next/app'
+import React, { useEffect } from 'react'
 import Layout from '../components/Layout'
 import { GlobalProvider } from '../context/GlobalContext'
 
@@ -21,8 +22,46 @@ import '../assets/fonts/fontawesome-5/css/all.css'
 
 import '../scss/bootstrap.scss'
 import '../scss/main.scss'
+import { Spinner } from 'react-bootstrap'
 
-import { AuthProvider } from '../context/AuthContext'
+import { AuthProvider, useAuth } from '../context/AuthContext'
+import { useRouter } from 'next/router'
+
+const Dashboard = ({ Component, pageProps, role }) => {
+  const { loading, authUser, claims } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!loading && claims.role !== role) {
+      router.push('/')
+    }
+  }, [loading])
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          left: '50%'
+        }}
+        className='skelton'
+      >
+        <Spinner animation='grow' variant='primary'></Spinner>
+      </div>
+    )
+  }
+
+  if (!loading && authUser && claims.role === role) {
+    return (
+      <Layout pageContext={{ layout: 'dashboard' }}>
+        <Component {...pageProps} />
+      </Layout>
+    )
+  }
+  return null
+}
 
 const MyApp = ({ Component, pageProps, router }) => {
   if (router.pathname.match(/404/)) {
@@ -34,19 +73,30 @@ const MyApp = ({ Component, pageProps, router }) => {
       </GlobalProvider>
     )
   }
-  if (router.pathname.match(/dashboard/)) {
+  if (router.pathname.match(/student/)) {
     return (
       <GlobalProvider>
         <AuthProvider>
           <ToastContainer />
-          <Layout pageContext={{ layout: 'dashboard' }}>
-            <Component {...pageProps} />
-          </Layout>
+          <Dashboard
+            Component={Component}
+            pageProps={pageProps}
+            role='student'
+          />
         </AuthProvider>
       </GlobalProvider>
     )
   }
-
+  if (router.pathname.match(/tutor/)) {
+    return (
+      <GlobalProvider>
+        <AuthProvider>
+          <ToastContainer />
+          <Dashboard Component={Component} pageProps={pageProps} role='tutor' />
+        </AuthProvider>
+      </GlobalProvider>
+    )
+  }
   return (
     <GlobalProvider>
       <AuthProvider>
