@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import CountUp from 'react-countup'
 import LazyLoad from 'react-lazyload'
+import moment from 'moment'
 import PageWrapper from '../../components/PageWrapper'
 import { Select } from '../../components/Core'
 import server from '../../utils/api'
@@ -9,13 +10,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useState } from 'react'
 import { useEffect } from 'react'
 
-const defaultJobs = [
-  { value: 'pd', label: 'Product Designer' },
-  { value: 'gd', label: 'Graphics Designer' },
-  { value: 'fd', label: 'Frontend Developer' },
-  { value: 'bd', label: 'Backend Developer' },
-  { value: 'cw', label: 'Content Writer' }
-]
+const defaultJobs = []
 
 const DashboardMain = () => {
   const [data, setData] = useState([])
@@ -57,7 +52,7 @@ const DashboardMain = () => {
                     <h5 className='font-size-8 font-weight-semibold text-black-2 line-height-reset font-weight-bold mb-1'>
                       <LazyLoad>
                         <span className='counter'>
-                          <CountUp duration={6} end={5} />
+                          <CountUp duration={6} end={data.length} />
                         </span>
                       </LazyLoad>
                     </h5>

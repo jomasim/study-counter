@@ -32,7 +32,7 @@ const FileUpload = ({ docs, setDocs }) => {
         if (fileItems.length === 0) {
           onRequestClear()
         }
-
+        
         setFiles(fileItems.map(fileItem => fileItem.file))
       }}
       server={{

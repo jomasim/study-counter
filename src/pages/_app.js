@@ -32,7 +32,7 @@ const Dashboard = ({ Component, pageProps, role }) => {
   const router = useRouter()
 
   useEffect(() => {
-    if (!loading && claims.role !== role) {
+    if (!loading && (!claims || claims.role !== role)) {
       router.push('/')
     }
   }, [loading])

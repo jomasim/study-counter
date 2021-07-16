@@ -77,7 +77,7 @@ const ProfileMenu = ({ imgP, size, router, claims }) => {
               className='gr-menu-dropdown border-0 border-width-2 py-2 w-auto bg-default'
               key='1'
             >
-              {claims.role === 'student' && (
+              {claims && claims.role === 'student' && (
                 <Link href='/#'>
                   <a
                     className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
@@ -117,16 +117,32 @@ const ProfileMenu = ({ imgP, size, router, claims }) => {
               className='dropdown-menu gr-menu-dropdown dropdown-right border-0 border-width-2 py-2 w-auto bg-default'
               key='2'
             >
-              <Link href='/#'>
-                <a
-                  className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
-                  onClick={() => {
-                    router.push('/student/home')
-                  }}
-                >
-                  My Orders
-                </a>
-              </Link>
+              {claims && claims.role === 'student' && (
+                <Link href='/#'>
+                  <a
+                    className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
+                    onClick={() => {
+                      router.push('/student/home')
+                    }}
+                  >
+                    My Orders
+                  </a>
+                </Link>
+              )}
+
+              {claims && claims.role === 'tutor' && (
+                <Link href='/#'>
+                  <a
+                    className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'
+                    onClick={() => {
+                      router.push('/tutor/home')
+                    }}
+                  >
+                    Posted jobs
+                  </a>
+                </Link>
+              )}
+
               <Link href='/#'>
                 <a className='dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase'>
                   Settings
@@ -331,7 +347,7 @@ const Header = () => {
                                     </a>
                                   </Link>
                                 )}
-                              {!router.pathname.match(/dashboard/) && (
+                              {!router.pathname.match(/tutor/) && (
                                 <Link href={`/${name}`}>
                                   <a
                                     className='nav-link'

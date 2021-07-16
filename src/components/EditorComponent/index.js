@@ -359,7 +359,7 @@ const Editor = () => {
   const { authUser, token } = useAuth()
   const [ready, setReady] = useState(false)
   const [tags, setTags] = useState([])
-  const [deadline, setDeadline] = useState('')
+  const [deadline, setDeadline] = useState(new Date())
   const [files, setFiles] = useState([])
 
   useEffect(() => {
@@ -397,10 +397,11 @@ const Editor = () => {
       })
       .then(res => {
         toast('Success!', { type: 'success', position: 'top-right' })
-        router.push('/dashboard')
+        router.push('/student/home')
       })
       .catch(err => {
-        toast('An error occured!', { type: 'error', position: 'top-right' })
+        const message = err.message || 'An error occured!'
+        toast(message, { type: 'error', position: 'top-right' })
       })
   }
 

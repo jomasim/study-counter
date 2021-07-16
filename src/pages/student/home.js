@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import CountUp from 'react-countup'
 import LazyLoad from 'react-lazyload'
+import moment from 'moment'
 import PageWrapper from '../../components/PageWrapper'
 import { Select } from '../../components/Core'
 import server from '../../utils/api'
@@ -9,15 +10,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useState } from 'react'
 import { useEffect } from 'react'
 
-const defaultJobs = [
-  { value: 'pd', label: 'Product Designer' },
-  { value: 'gd', label: 'Graphics Designer' },
-  { value: 'fd', label: 'Frontend Developer' },
-  { value: 'bd', label: 'Backend Developer' },
-  { value: 'cw', label: 'Content Writer' }
-]
-
-const DashboardMain = () => {
+const Dashboard = () => {
   const [data, setData] = useState([])
   const { token } = useAuth()
 
@@ -169,7 +162,10 @@ const DashboardMain = () => {
                     <p className='font-size-4 mb-0 mr-6 py-2'>Filter by Job:</p>
                     <div className='h-px-48'>
                       <Select
-                        options={defaultJobs}
+                        options={data.map(item => ({
+                          value: item.id,
+                          label: item.title
+                        }))}
                         className='pl-0 h-100 arrow-3 arrow-3-black min-width-px-273  text-black-2 d-flex align-items-center w-100'
                         border={false}
                       />
@@ -204,14 +200,9 @@ const DashboardMain = () => {
                           scope='col'
                           className='pl-4 border-0 font-size-4 font-weight-normal'
                         >
-                          Created on
+                          Created
                         </th>
-                        <th
-                          scope='col'
-                          className='pl-4 border-0 font-size-4 font-weight-normal'
-                        >
-                          Total Applicants
-                        </th>
+
                         <th
                           scope='col'
                           className='pl-4 border-0 font-size-4 font-weight-normal'
@@ -231,7 +222,11 @@ const DashboardMain = () => {
                               className='pl-6 border-0 py-7 min-width-px-235'
                             >
                               <div className=''>
-                                <Link href='/job-details'>
+                                <Link
+                                  href={`/questions/${
+                                    question._id
+                                  }/${question.title.replace(/ /g, '-')}`}
+                                >
                                   <a className='font-size-4 mb-0 font-weight-semibold text-black-2'>
                                     {question.title}
                                   </a>
@@ -250,14 +245,10 @@ const DashboardMain = () => {
                             </td>
                             <td className='table-y-middle py-7 min-width-px-155'>
                               <h3 className='font-size-4 font-weight-normal text-black-2 mb-0'>
-                                {question.created_at}
+                                {moment(question.created_at).fromNow()}
                               </h3>
                             </td>
-                            <td className='table-y-middle py-7 min-width-px-205'>
-                              <h3 className='font-size-4 font-weight-bold text-black-2 mb-0'>
-                                47
-                              </h3>
-                            </td>
+
                             <td className='table-y-middle py-7 min-width-px-80'>
                               <a
                                 href='/#'
@@ -287,4 +278,4 @@ const DashboardMain = () => {
     </>
   )
 }
-export default DashboardMain
+export default Dashboard
