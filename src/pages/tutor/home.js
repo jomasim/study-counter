@@ -6,6 +6,7 @@ import PageWrapper from '../../components/PageWrapper'
 import { Select } from '../../components/Core'
 import server from '../../utils/api'
 import { useAuth } from '../../context/AuthContext'
+import { useRouter } from 'next/router'
 
 import { useState } from 'react'
 import { useEffect } from 'react'
@@ -15,6 +16,7 @@ const defaultJobs = []
 const DashboardMain = () => {
   const [data, setData] = useState([])
   const { token } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     const api = server(token)
@@ -224,14 +226,15 @@ const DashboardMain = () => {
                             <th
                               scope='row'
                               className='pl-6 border-0 py-7 min-width-px-235'
+                              onClick={() => {
+                                router.push({
+                                  pathname: '/question-details/[id]',
+                                  query: { id: question._id }
+                                })
+                              }}
+                              style={{ cursor: 'pointer' }}
                             >
-                              <div className=''>
-                                <Link href='/job-details'>
-                                  <a className='font-size-4 mb-0 font-weight-semibold text-black-2'>
-                                    {question.title}
-                                  </a>
-                                </Link>
-                              </div>
+                              <div className=''>{question.title}</div>
                             </th>
                             <td className='table-y-middle py-7 min-width-px-135'>
                               <h3 className='font-size-4 font-weight-normal text-black-2 mb-0'>
