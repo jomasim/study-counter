@@ -3,6 +3,7 @@ import server from '../../utils/api'
 import { useAuth } from '../../context/AuthContext'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import moment from 'moment'
 import PageWrapper from '../../components/PageWrapper'
 import renderHTML from 'react-render-html'
 import Skeleton from 'react-loading-skeleton'
@@ -60,7 +61,7 @@ const JobDetails = () => {
                               )}
 
                               <span className='font-size-3 text-gray line-height-2'>
-                                19 June 2020
+                                {moment(question.created_at).fromNow()}
                               </span>
                             </div>
                             {/* <!-- media texts end --> */}

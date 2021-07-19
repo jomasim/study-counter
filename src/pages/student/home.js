@@ -220,18 +220,15 @@ const Dashboard = () => {
                             <th
                               scope='row'
                               className='pl-6 border-0 py-7 min-width-px-235'
+                              onClick={() => {
+                                router.push({
+                                  pathname: '/question-details/[id]',
+                                  query: { id: question._id }
+                                })
+                              }}
+                              style={{ cursor: 'pointer' }}
                             >
-                              <div className=''>
-                                <Link
-                                  href={`/questions/${
-                                    question._id
-                                  }/${question.title.replace(/ /g, '-')}`}
-                                >
-                                  <a className='font-size-4 mb-0 font-weight-semibold text-black-2'>
-                                    {question.title}
-                                  </a>
-                                </Link>
-                              </div>
+                              <div className=''>{question.title}</div>
                             </th>
                             <td className='table-y-middle py-7 min-width-px-135'>
                               <h3 className='font-size-4 font-weight-normal text-black-2 mb-0'>

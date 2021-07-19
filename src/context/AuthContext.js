@@ -59,13 +59,7 @@ export const useFirebaseAuth = () => {
       .then(async res => {
         setLoading(false)
         gContext.toggleSignUpModal()
-        const idToken = await res.user.getIdToken(true)
-        const idTokenResult = await res.user.getIdTokenResult()
-        setClaims(idTokenResult.claims)
-        setToken(idToken)
-        if (redirect) {
-          handleRouting(idTokenResult)
-        }
+        gContext.toggleSignInModal()
       })
       .catch(err => {
         setLoading(false)
