@@ -25,6 +25,25 @@ const JobDetails = () => {
       })
     }
   }, [id])
+
+  const getRemainingTime = (deadline = moment(new Date(), 'DD MM YYYY hh')) => {
+    // current time
+    const now = moment(new Date(), 'DD MM YYYY hh')
+    // deadline
+    const end = moment(deadline, 'DD MM YYYY hh')
+
+    const days = end.diff(now, 'days')
+    const hours = end.subtract(days, 'days').diff(now, 'hours')
+    const minutes = end.subtract(hours, 'hours').diff(now, 'minutes')
+
+    const aboveZero = value => (value > 0 ? value : 0)
+
+    const formatted = ` ${aboveZero(days)} Days ${aboveZero(
+      hours
+    )} Hours  ${aboveZero(minutes)} Minutes `
+
+    return formatted
+  }
   return (
     <>
       <PageWrapper headerConfig={{ button: 'profile' }}>
@@ -73,11 +92,14 @@ const JobDetails = () => {
                         <div className='col-12'>
                           {/* <!-- card-btn-group start --> */}
                           <div className='card-btn-group'>
-                            <Link href='/#'>
-                              <a className='btn btn-green text-uppercase btn-medium rounded-3 w-180 mr-4 mb-5'>
-                                Save job
-                              </a>
-                            </Link>
+                            <span className='btn btn-green text-uppercase btn-medium rounded-3 w-240 mr-4 mb-5'>
+                              {getRemainingTime(question.deadline)}
+                            </span>
+                            <div>
+                              <span className='font-size-3 text-gray line-height-2'>
+                               Remaining Time
+                              </span>
+                            </div>
                           </div>
                           {/* <!-- card-btn-group end --> */}
                         </div>
@@ -149,24 +171,14 @@ const JobDetails = () => {
                             </ul>
                           </div>
                         </div>
-                        <div className='col-md-4 pr-lg-0 pl-lg-10 mb-lg-0 mb-8'>
-                          <div className=''>
-                            <span className='font-size-4 d-block mb-4 text-gray'>
-                              Deadline
-                            </span>
 
-                            <h6 className='font-size-5 text-black-2 font-weight-semibold mb-9'>
-                              {question.deadline}
-                            </h6>
-                          </div>
-                        </div>
                         <div className='col-md-4 pl-lg-0'>
                           <div className=''>
                             <span className='font-size-4 d-block mb-4 text-gray'>
-                              Pages
+                              Course Code
                             </span>
                             <h6 className='font-size-5 text-black-2 font-weight-semibold mb-0'>
-                              10-15 Pages
+                              {question.course_code}
                             </h6>
                           </div>
                         </div>

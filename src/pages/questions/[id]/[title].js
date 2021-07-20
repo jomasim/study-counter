@@ -190,19 +190,6 @@ const Question = () => {
                 <div style={{ marginTop: '30px' }}>
                   {question && <Answer question={question} />}
                 </div>
-
-                <div style={{ marginTop: '20px' }}>
-                  <span
-                    style={{
-                      color: '#1d1c1c',
-                      fontWeight: '500',
-                      marginBottom: '10px'
-                    }}
-                  >
-                    Your Answer
-                  </span>
-                  <CEditor setContent={setAnswer} />
-                </div>
               </div>
               <div
                 className='col-xl-4 col-md-11'

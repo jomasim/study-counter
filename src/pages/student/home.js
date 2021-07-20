@@ -2,6 +2,7 @@ import Link from 'next/link'
 import CountUp from 'react-countup'
 import LazyLoad from 'react-lazyload'
 import moment from 'moment'
+import { useRouter } from 'next/router'
 import PageWrapper from '../../components/PageWrapper'
 import { Select } from '../../components/Core'
 import server from '../../utils/api'
@@ -13,6 +14,7 @@ import { useEffect } from 'react'
 const Dashboard = () => {
   const [data, setData] = useState([])
   const { token } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     const api = server(token)

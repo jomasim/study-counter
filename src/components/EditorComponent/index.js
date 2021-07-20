@@ -166,7 +166,11 @@ const Extra = ({ setCourseCode, setDeadline, onSubmit, stepper }) => {
       <Form.Group>
         <Form.Label>Deadline</Form.Label>
 
-        <Form.Control as='select' onChange={e => setDate(e.target.value)}>
+        <Form.Control
+          required
+          as='select'
+          onChange={e => setDate(e.target.value)}
+        >
           <option>3 Hours</option>
           <option>6 Hours</option>
           <option>12 Hours</option>
@@ -359,12 +363,16 @@ const Editor = () => {
   const { authUser, token } = useAuth()
   const [ready, setReady] = useState(false)
   const [tags, setTags] = useState([])
-  const [deadline, setDeadline] = useState(new Date())
+  const [deadline, setDeadline] = useState(
+    moment()
+      .add(3, 'hours')
+      .format('DD MM YYYY hh')
+  )
   const [files, setFiles] = useState([])
 
   useEffect(() => {
     if (ready && authUser) {
-      handleQuestion()
+      // handleQuestion()
       setReady(false)
     }
   }, [authUser])
@@ -379,7 +387,7 @@ const Editor = () => {
       gContext.toggleSignInModal()
       setReady(true)
     } else if (authUser) {
-      handleQuestion()
+      // handleQuestion()
     }
   }
 
