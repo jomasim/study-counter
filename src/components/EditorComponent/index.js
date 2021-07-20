@@ -372,7 +372,7 @@ const Editor = () => {
 
   useEffect(() => {
     if (ready && authUser) {
-      // handleQuestion()
+      handleQuestion()
       setReady(false)
     }
   }, [authUser])
@@ -387,7 +387,7 @@ const Editor = () => {
       gContext.toggleSignInModal()
       setReady(true)
     } else if (authUser) {
-      // handleQuestion()
+      handleQuestion()
     }
   }
 
