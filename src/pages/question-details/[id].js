@@ -218,7 +218,7 @@ const JobDetails = () => {
                               id='attachments'
                               style={{ background: '#f2f2f2', padding: '15px' }}
                             >
-                              {question.files &&
+                              {question.files.length &&
                                 question.files.map((file, index) => (
                                   <>
                                     <a
