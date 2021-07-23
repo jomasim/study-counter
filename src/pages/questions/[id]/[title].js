@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { Collapse } from 'react-bootstrap'
 import Link from 'next/link'
 import PageWrapper from '../../../components/PageWrapper'
-import CEditor from '../../../components/CEditor'
 import server from '../../../utils/api'
 import { useAuth } from '../../../context/AuthContext'
 import { useRouter } from 'next/router'
@@ -39,7 +38,9 @@ const Card = ({ question }) => (
       </div>
     </div>
 
-    <div> {question.body && renderHTML(question.body)}</div>
+    <div className='q-content'>
+      {question.body && renderHTML(question.body)}
+    </div>
 
     <div className='row pt-1'>
       <div className='col-md-7'>

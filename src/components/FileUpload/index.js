@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import firebase from 'firebase/app'
 import { firebaseStorage } from '../../../firebase'
 import shortid from 'shortid'

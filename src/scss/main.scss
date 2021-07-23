@@ -198,7 +198,7 @@
 @import 'theme-custom-styles';
 //custom css starts here
 .q-content img {
-    max-width: 100%;
+    max-width: 100% !important;
 }
 
 @import 'pages/editor';

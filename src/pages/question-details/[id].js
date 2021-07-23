@@ -7,14 +7,13 @@ import moment from 'moment'
 import PageWrapper from '../../components/PageWrapper'
 import renderHTML from 'react-render-html'
 import { FaDownload } from 'react-icons/fa'
-import Skeleton from 'react-loading-skeleton'
 import CEditor from '../../components/CEditor'
 
 import iconD from '../../assets/image/svg/icon-dolor.svg'
 
 const JobDetails = () => {
   const [answer, setAnswer] = useState({})
-  const [question, setQuestion] = useState({})
+  const [question, setQuestion] = useState(null)
   const { token } = useAuth()
   const router = useRouter()
   const { id } = router.query
@@ -23,7 +22,6 @@ const JobDetails = () => {
     const api = server(token)
     if (id) {
       api.get(`/question/${id}`).then(res => {
-        console.log('data', res.data)
         setQuestion(res.data)
       })
     }
@@ -209,17 +207,21 @@ const JobDetails = () => {
                             </p>
                             {question.body && (
                               <React.Fragment>
-                                <div className='font-size-4 text-black-2 mb-7'>
+                                <div className='font-size-4 text-black-2 mb-7 q-content'>
                                   {renderHTML(question.body)}
                                 </div>
                               </React.Fragment>
                             )}
-                            <div
-                              id='attachments'
-                              style={{ background: '#f2f2f2', padding: '15px' }}
-                            >
-                              {question.files.length &&
-                                question.files.map((file, index) => (
+
+                            {question && question.files.length > 0 && (
+                              <div
+                                id='attachments'
+                                style={{
+                                  background: '#f2f2f2',
+                                  padding: '15px'
+                                }}
+                              >
+                                {question.files.map((file, index) => (
                                   <>
                                     <a
                                       href={file.url || '#'}
@@ -249,7 +251,8 @@ const JobDetails = () => {
                                     </a>
                                   </>
                                 ))}
-                            </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
