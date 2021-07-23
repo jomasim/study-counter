@@ -17,10 +17,12 @@ const JobDetails = () => {
   const { token } = useAuth()
   const router = useRouter()
   const { id } = router.query
+
   useEffect(() => {
     const api = server(token)
     if (id) {
       api.get(`/question/${id}`).then(res => {
+        console.log('data', res.data)
         setQuestion(res.data)
       })
     }
@@ -97,7 +99,7 @@ const JobDetails = () => {
                             </span>
                             <div>
                               <span className='font-size-3 text-gray line-height-2'>
-                               Remaining Time
+                                Remaining Time
                               </span>
                             </div>
                           </div>

@@ -15,32 +15,45 @@ registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
 const FileUpload = ({ docs, setDocs }) => {
   const [files, setFiles] = useState([])
-  const onRequestSave = id => {
+  const onRequestSave = (id, file) => {
+    const { name, type, size } = file
     const data = docs
-    data.push(id)
+    data.push({ id, name, type, size })
     setDocs(data)
   }
-  const onRequestClear = id => {
-    console.log('we clear here', id)
+  const handleRemove = (errRes, file) => {
+    if (file.name) {
+      const filtered = files.filter(doc => doc.name !== file.name)
+      const attachments = docs.filter(doc => doc.name !== file.name)
+      // update files and attachments(uploaded files)
+      setFiles(filtered)
+      setDocs(attachments)
+    }
   }
+
   return (
     <FilePond
       files={files}
       allowMultiple={true}
       maxFiles={3}
-      onupdatefiles={fileItems => {
-        if (fileItems.length === 0) {
-          onRequestClear()
-        }
-        
-        setFiles(fileItems.map(fileItem => fileItem.file))
-      }}
+      onremovefile={handleRemove}
+      onupdatefiles={setFiles}
       server={{
+        revert: (source, load, error) => {
+          try {
+            firebaseStorage.child('attachments/' + source).delete()
+          } catch (err) {
+            toast(err.message, { type: 'error', position: 'top-right' })
+          }
+          error('an occurred while deleting file')
+          load()
+          console.log('remove file', source)
+        },
         // this uploads the file using firebase
         process: (fieldName, file, metadata, load, error, progress, abort) => {
           // create a unique id for the file
           const id = shortid.generate()
-
+          console.log(file, 'file here')
           // upload the file to firebase
           const task = firebaseStorage.child('attachments/' + id).put(file)
 
@@ -57,24 +70,21 @@ const FileUpload = ({ docs, setDocs }) => {
               toast(err.message, { type: 'error', position: 'top-right' })
             },
             () => {
-              // the file has been uploaded
+              onRequestSave(id, file)
               load(id)
-              onRequestSave(id)
             }
           )
         },
-
         // this loads an already uploaded file to firebase
         load: (source, load, error, progress, abort) => {
           // reset our progress
           progress(true, 0, 1024)
-
           // fetch the download URL from firebase
           firebaseStorage
-            .child('attachements/' + source)
+            .child('attachments/' + source)
             .getDownloadURL()
             .then(url => {
-              // fetch the actual file using the download URL
+              // fetch the actual image using the download URL
               // and provide the blob to FilePond using the load callback
               let xhr = new XMLHttpRequest()
               xhr.responseType = 'blob'
@@ -86,8 +96,8 @@ const FileUpload = ({ docs, setDocs }) => {
               xhr.send()
             })
             .catch(err => {
-              error(err.message)
               toast(err.message, { type: 'error', position: 'top-right' })
+              error(err.message)
               abort()
             })
         }
