@@ -6,6 +6,7 @@ import Link from 'next/link'
 import moment from 'moment'
 import PageWrapper from '../../components/PageWrapper'
 import renderHTML from 'react-render-html'
+import { FaDownload } from 'react-icons/fa'
 import Skeleton from 'react-loading-skeleton'
 import CEditor from '../../components/CEditor'
 
@@ -46,6 +47,19 @@ const JobDetails = () => {
 
     return formatted
   }
+
+  const formatBytes = (bytes, decimals = 2) => {
+    if (bytes === 0) return '0 Bytes'
+
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+  }
+
   return (
     <>
       <PageWrapper headerConfig={{ button: 'profile' }}>
@@ -200,6 +214,42 @@ const JobDetails = () => {
                                 </div>
                               </React.Fragment>
                             )}
+                            <div
+                              id='attachments'
+                              style={{ background: '#f2f2f2', padding: '15px' }}
+                            >
+                              {question.files &&
+                                question.files.map((file, index) => (
+                                  <>
+                                    <a
+                                      href={file.url || '#'}
+                                      target='_blank'
+                                      download
+                                      key={index}
+                                      style={{
+                                        background: '#00b074',
+                                        color: '#fff',
+                                        padding: '7px',
+                                        borderRadius: '4px',
+                                        marginBottom: '10px',
+                                        cursor: 'pointer',
+                                        display: 'flex'
+                                      }}
+                                    >
+                                      <span>{file.name || '---'}</span>
+                                      <small
+                                        style={{
+                                          marginLeft: 'auto',
+                                          marginRight: '5px'
+                                        }}
+                                      >
+                                        {formatBytes(file.size) || 0}
+                                      </small>
+                                      <FaDownload />
+                                    </a>
+                                  </>
+                                ))}
+                            </div>
                           </div>
                         </div>
                       </div>
