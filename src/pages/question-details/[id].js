@@ -4,17 +4,19 @@ import { useAuth } from '../../context/AuthContext'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import moment from 'moment'
+import { Button } from 'react-bootstrap'
 import PageWrapper from '../../components/PageWrapper'
 import renderHTML from 'react-render-html'
 import { FaDownload } from 'react-icons/fa'
 import CEditor from '../../components/CEditor'
+import Answer from '../../components/Answer'
 
 import iconD from '../../assets/image/svg/icon-dolor.svg'
 
 const JobDetails = () => {
-  const [answer, setAnswer] = useState({})
+  const [answer, setAnswer] = useState('')
   const [question, setQuestion] = useState(null)
-  const { token } = useAuth()
+  const { token, claims } = useAuth()
   const router = useRouter()
   const { id } = router.query
 
@@ -26,6 +28,16 @@ const JobDetails = () => {
       })
     }
   }, [id])
+
+  const handleAnswerQuestion = () => {
+    const api = server(token)
+    api.post(`/question/update/${id}`, { answer }).then(res => {
+      setAnswer('')
+      api.get(`/question/${id}`).then(res => {
+        setQuestion(res.data)
+      })
+    })
+  }
 
   const getRemainingTime = (deadline = moment(new Date(), 'DD MM YYYY hh')) => {
     // current time
@@ -261,23 +273,39 @@ const JobDetails = () => {
                       <div className='row'>
                         <div className='col-xl-11 col-md-12 pr-xxl-9 pr-xl-10 pr-lg-20'></div>
                       </div>
-                      <div style={{ marginTop: '20px' }}>
-                        <span
-                          style={{
-                            color: '#1d1c1c',
-                            fontWeight: '500',
-                            marginBottom: '10px'
-                          }}
-                        >
-                          Your Answer
-                        </span>
-                        <CEditor setContent={setAnswer} />
-                        <Link href='/#'>
-                          <a className='btn btn-green text-uppercase btn-medium w-180 h-px-48 rounded-3 mr-4 mt-6'>
+                      {question &&
+                        question.answers.map((answer, index) => (
+                          <Answer
+                            key={index}
+                            question={question}
+                            title={question.title}
+                            answer={answer}
+                          />
+                        ))}
+
+                      {claims && claims.role === 'tutor' && (
+                        <div style={{ marginTop: '20px' }}>
+                          <span
+                            style={{
+                              color: '#1d1c1c',
+                              fontWeight: '500',
+                              marginBottom: '10px'
+                            }}
+                          >
+                            Your Answer
+                          </span>
+                          <CEditor setContent={setAnswer} />
+                          <Button
+                            style={{ marginLeft: '20px' }}
+                            type='submit'
+                            variant='primary'
+                            className='btn btn-green text-uppercase btn-medium w-180 h-px-48 rounded-3 mr-4 mt-6'
+                            onClick={() => handleAnswerQuestion()}
+                          >
                             Submit
-                          </a>
-                        </Link>
-                      </div>
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
