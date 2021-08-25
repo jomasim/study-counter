@@ -3,7 +3,6 @@ import { Button } from "react-bootstrap";
 
 import { Select } from "../../components/Core";
 import imgC1 from "../../assets/image/l3/png/hero-image-1.png";
-import imgC2 from "../../assets/image/l3/png/hero-image-2.png";
 
 const defaultCountries = [
   { value: "math", label: "Math" },
@@ -93,16 +92,6 @@ const Hero = () => {
                     data-aos-dealy="750"
                   >
                     <img src={imgC1} alt="hero 1" />
-                  </div>
-                </div>
-                <div className="col-sm-6 col-10 mt-10 mt-lg-0">
-                  <div
-                    className="single-image"
-                    data-aos="fade-left"
-                    data-aos-duration="1000"
-                    data-aos-dealy="1200"
-                  >
-                    <img src={imgC2} alt="hero 2" />
                   </div>
                 </div>
               </div>
