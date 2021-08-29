@@ -1,7 +1,5 @@
-import Link from 'next/link'
 import CountUp from 'react-countup'
 import LazyLoad from 'react-lazyload'
-import moment from 'moment'
 import PageWrapper from '../../components/PageWrapper'
 import { Select } from '../../components/Core'
 import server from '../../utils/api'
@@ -22,7 +20,7 @@ const DashboardMain = () => {
     const api = server(token)
     if (!data.length) {
       api.get('/question').then(res => {
-        setData(res.data)
+        setData(res.data.questions || [])
       })
     }
   }, [data])
