@@ -1,22 +1,62 @@
 import React, { useState, useEffect } from 'react'
+import styled from 'styled-components'
+import Pagination from 'react-pagination-library'
+import 'react-pagination-library/build/css/index.css'
 import { Button } from 'react-bootstrap'
 import { Collapse } from 'react-bootstrap'
 import PageWrapper from '../components/PageWrapper'
 import QuestionCard from '../components/QuestionCard'
 import server from '../utils/api'
 
+const Loader = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #fff;
+  z-index: 9999999999;
+  opacity: 1;
+  visibility: visible;
+  transition: all 1s ease-out 0.5s;
+  &.inActive {
+    opacity: 0;
+    visibility: hidden;
+  }
+`
+
 const Explore = () => {
   const [openItem, setOpenItem] = useState(1)
   const [data, setData] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [paginationData, setPaginationData] = useState({})
+  const [loading, setLoading] = useState(false)
+
+  const fetchData = () => {
+    setLoading(true)
+    const api = server()
+    api
+      .get(`/question/?page=${currentPage}&limit=10`)
+      .then(res => {
+        setData(res.data.questions)
+        setPaginationData({
+          count: res.data.count || 0,
+          nextPage: res.data.nextPage || 1,
+          prevPage: res.data.prevPage || 1,
+          page: res.data.page || 1
+        })
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        setLoading(false)
+      })
+  }
 
   useEffect(() => {
-    const api = server()
-    if (!data.length) {
-      api.get('/question/?page=1&limit=10').then(res => {
-        setData(res.data.questions)
-      })
-    }
-  }, [data])
+    fetchData()
+  }, [currentPage])
+
   return (
     <>
       <PageWrapper>
@@ -66,13 +106,23 @@ const Explore = () => {
                     </form>
                   </div>
                   <div data-aos='fade-up' data-aos-duration='1000'>
-                    {data &&
+                    {loading && <Loader />}
+                    {!loading &&
+                      data &&
                       data.map((question, index) => (
                         <div style={{ marginBottom: '20px' }} key={index}>
                           <QuestionCard question={question} />
                         </div>
                       ))}
                   </div>
+                </div>
+                <div>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={paginationData.count}
+                    changeCurrentPage={setCurrentPage}
+                    theme='square-i'
+                  />
                 </div>
               </div>
               <div
