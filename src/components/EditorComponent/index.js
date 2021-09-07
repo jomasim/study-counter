@@ -44,7 +44,7 @@ const SelectSubject = ({ options = [], subject, setSubject, stepper }) => {
           }
         >
           <div className='selected-option'>
-            <span>{subject === '' ? 'Select a subject' : subject}</span>
+            <span>{subject.title ? subject.title : 'Select a subject'}</span>
             {visibility ? <FaCaretDown /> : <FaCaretUp />}
           </div>
         </div>
@@ -74,19 +74,21 @@ const SelectSubject = ({ options = [], subject, setSubject, stepper }) => {
           <ul>
             {options
               .filter(option =>
-                option.toLowerCase().includes(search.toLowerCase())
+                option.title.toLowerCase().includes(search.toLowerCase())
               )
               .map((option, index) => (
                 <li
                   key={index}
-                  className={subject === option ? 'active-option' : null}
+                  className={
+                    subject._id === option._id ? 'active-option' : null
+                  }
                   onClick={() => {
                     setErrors({ ...errors, subject: null })
                     setSubject(option)
                     setVisibility(!visibility)
                   }}
                 >
-                  {option}
+                  {option.title}
                 </li>
               ))}
           </ul>
@@ -113,20 +115,6 @@ const SelectSubject = ({ options = [], subject, setSubject, stepper }) => {
     </Form>
   )
 }
-
-const subjs = [
-  'Social Science',
-  'Sociology',
-  'Anatomy',
-  'Biochemistry',
-  'Financial Accounting',
-  'Math',
-  'Business',
-  'Science',
-  'Engineering & Technology',
-  'Arts & Humanities',
-  'Social Science'
-]
 
 const Extra = ({ setCourseCode, setDeadline, onSubmit, stepper }) => {
   const [validated, setValidated] = useState(false)
@@ -363,6 +351,7 @@ const Editor = () => {
   const { authUser, token } = useAuth()
   const [ready, setReady] = useState(false)
   const [tags, setTags] = useState([])
+  const [fields, setFields] = useState([])
   const [deadline, setDeadline] = useState(
     moment()
       .add(3, 'hours')
@@ -391,6 +380,26 @@ const Editor = () => {
     }
   }
 
+  const fetchFields = () => {
+    const api = server(token)
+    api
+      .get('/field')
+      .then(res => {
+        const data = res.data
+        setFields(data || [])
+      })
+      .catch(err => {
+        const message = 'An error occured while fetching fields!'
+        toast(message, { type: 'error', position: 'top-right' })
+      })
+  }
+
+  useEffect(() => {
+    if (!fields.length) {
+      fetchFields()
+    }
+  }, [fields])
+
   const handleQuestion = () => {
     const api = server(token)
     api
@@ -398,7 +407,7 @@ const Editor = () => {
         body: content,
         title,
         course_code: courseCode,
-        subject_code: subject,
+        subject_code: subject._id || '',
         deadline,
         tags,
         files
@@ -453,7 +462,7 @@ const Editor = () => {
           </div>
           <div id='test-l-2' className='content'>
             <SelectSubject
-              options={subjs}
+              options={fields}
               setSubject={setSubject}
               subject={subject}
               stepper={stepper}
