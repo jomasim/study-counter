@@ -23,6 +23,8 @@
     "bootstrap": "^4.5.0",
     "bs-stepper": "^1.7.0",
     "cross-env": "^7.0.3",
+    "dotenv": "^10.0.0",
+    "dotenv-webpack": "^7.0.3",
     "filepond": "^4.28.2",
     "filepond-plugin-image-exif-orientation": "^1.0.11",
     "filepond-plugin-image-preview": "^4.6.6",
