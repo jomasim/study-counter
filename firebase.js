@@ -3,13 +3,13 @@ import 'firebase/auth'
 import 'firebase/storage'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBHTF3LzlZbMUVfrbbhebtqC91snsX-IOM',
-  authDomain: 'study-counter-fe6e7.firebaseapp.com',
-  projectId: 'study-counter-fe6e7',
-  storageBucket: 'study-counter-fe6e7.appspot.com',
-  messagingSenderId: '103632367028',
-  appId: '1:103632367028:web:cc54242ed0a83d759756e1',
-  measurementId: 'G-BFS1XYRESL'
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 }
 
 if (!firebase.apps.length) {
