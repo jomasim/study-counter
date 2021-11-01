@@ -41,9 +41,7 @@ const Contact = () => {
                     </h3>
                     {/* <!-- card-texts start --> */}
                     <p className="card-text font-size-4 px-xxl-28 px-xs-10 px-sm-13 px-lg-13 px-md-28 px-xl-22 px-0 mb-11">
-                      Collaboratively administrate empowered markets via
-                      plug-and-play networks. Dynamically procrastinate B2C
-                      users after installed base.
+                      The page you are looking for does not exists. Go back or proceed to the home page and create an order.
                     </p>
                     {/* <!-- card-texts end --> */}
                     <Link href="/">
