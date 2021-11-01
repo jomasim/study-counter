@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { Collapse } from 'react-bootstrap'
 import Link from 'next/link'
-import PageWrapper from '../../../components/PageWrapper'
-import server from '../../../utils/api'
-import { useAuth } from '../../../context/AuthContext'
+import PageWrapper from '../../components/PageWrapper'
+import server from '../../utils/api'
+import { useAuth } from '../../context/AuthContext'
 import { useRouter } from 'next/router'
 import renderHTML from 'react-render-html'
 import ReactTimeAgo from 'react-time-ago'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
-import Answer from '../../../components/Answer'
+import Answer from '../../components/Answer'
 
 TimeAgo.addLocale(en)
 
@@ -99,16 +99,16 @@ const Question = () => {
   const [question, setQuestion] = useState(null)
   const { token } = useAuth()
   const router = useRouter()
-  const { id, title } = router.query
+  const { slug } = router.query
 
   useEffect(() => {
     const api = server(token)
-    if (title) {
-      api.get(`/question/${id}`).then(res => {
+    if (slug) {
+      api.get(`/question/${slug}`).then(res => {
         setQuestion(res.data)
       })
     }
-  }, [title])
+  }, [slug])
 
   return (
     <>

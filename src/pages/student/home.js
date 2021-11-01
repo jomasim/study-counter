@@ -223,10 +223,9 @@ const Dashboard = () => {
                               scope='row'
                               className='pl-6 border-0 py-7 min-width-px-235'
                               onClick={() => {
-                                router.push({
-                                  pathname: '/question-details/[id]',
-                                  query: { id: question._id }
-                                })
+                                router.push(
+                                  `/question-details/${question.slug}`
+                                )
                               }}
                               style={{ cursor: 'pointer' }}
                             >

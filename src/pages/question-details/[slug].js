@@ -18,22 +18,22 @@ const JobDetails = () => {
   const [question, setQuestion] = useState(null)
   const { token, claims } = useAuth()
   const router = useRouter()
-  const { id } = router.query
+  const { slug } = router.query
 
   useEffect(() => {
     const api = server(token)
-    if (id) {
-      api.get(`/question/${id}`).then(res => {
+    if (slug) {
+      api.get(`/question/${slug}`).then(res => {
         setQuestion(res.data)
       })
     }
-  }, [id])
+  }, [slug])
 
   const handleAnswerQuestion = () => {
     const api = server(token)
     api.post(`/question/update/${id}`, { answer }).then(res => {
       setAnswer('')
-      api.get(`/question/${id}`).then(res => {
+      api.get(`/question/${slug}`).then(res => {
         setQuestion(res.data)
       })
     })
