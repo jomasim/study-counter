@@ -26,6 +26,7 @@ import { Spinner } from 'react-bootstrap'
 
 import { AuthProvider, useAuth } from '../context/AuthContext'
 import { useRouter } from 'next/router'
+import TagManager from 'react-gtm-module'
 
 const Dashboard = ({ Component, pageProps, role }) => {
   const { loading, authUser, claims } = useAuth()
@@ -64,6 +65,9 @@ const Dashboard = ({ Component, pageProps, role }) => {
 }
 
 const MyApp = ({ Component, pageProps, router }) => {
+  useEffect(() => {
+    TagManager.initialize({ gtmId: 'GGTM-P73XRX8' })
+  }, [])
   if (router.pathname.match(/404/)) {
     return (
       <GlobalProvider>
